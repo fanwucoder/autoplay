@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<Project>
+<ProjInfo>
+<EnterFile>测试root功能.t</EnterFile>
+<Language>1</Language>
+<Version>2.2.3</Version>
+<ExeIco/>
+<Platform>android</Platform>
+<PackageName>com.ais.fw</PackageName>
+<AppName>测试root功能</AppName>
+</ProjInfo>
+</Project>
