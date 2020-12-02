@@ -1,4 +1,4 @@
-traceprint("BeginHoldupLogcat+356020296356020296")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
+traceprint("BeginHoldupLogcat+10388243591038824359")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
 
 Unit={
 State={},
@@ -13,51 +13,38 @@ function processState(stateTable,stateName,stateParam)
 end
 H["登录界面"]={
 {"登录按钮",0.8,725,645,775,698,"101A28-111111","7|7|101A28-111111,6|19|101A28-111111"},
+{"公告",0.8,596,70,688,126,"FFFFFF-000000","4|0|141F33-000000,6|0|737477-000000,9|0|19273F-000000"}
 }
 function floatwinrun()
     -- 浮动窗口运行按钮执行的事件,如果不需要可去掉
+    messagebox("脚本开始运行")
     require("XM")
     XM.AddTable(H)
-    setrotatescreen(0)
+    setrotatescreen(1)
     
-
- 
-    local ret = screencap(0,0,500,500,"/sdcard/t.bmp")
-if ret == true then
-lineprint("测试root功能.t",25,"截图成功")
-else
-lineprint("测试root功能.t",27,"截图失败")
-end
-
-   local ret= cmdnew("su root screencap -p /sdcard/aa.png")
-   lineprint("测试root功能.t",31,ret)
-    --    while true do    
-    --        
-    --        
-    --        x,y,ret=findmulticolor(180,555,264,634,"009688-111111","0|0|009688-111111,-1|19|009688-111111",0.9,0)
-    --        
-    --        
-    --        if x~=-1 then
-    --            lineprint("测试root功能.t",39,"找到颜色")
-    --            lineprint("测试root功能.t",40,tostring(x))
-    --            lineprint("测试root功能.t",41,tostring(y))
-    --        else
-    --            lineprint("测试root功能.t",43,"什么鬼a")    
-    --        end
-    --        --releasecapture()
-    --        
-    --    end
-    --    
-    --    XM.SetTableID("登录界面")
-    --    
-    --    while true do
-    --        XM.KeepScreen()
-    --        if XM.Find(5,"登录按钮",true) then
-    --            lineprint("测试root功能.t",54,"找到登录了")   
-    --        else
-    --            lineprint("测试root功能.t",56,"什么鬼，找不到!")
-    --        end
-    --    end
+    
+    
+    --    local ret = screencap(0,0,500,500,"/sdcard/t.bmp")
+    --if ret == true then
+    --messagebox("截图成功")
+    --else
+    --messagebox("截图失败")
+    --end
+    
+    
+    XM.SetTableID("登录界面")
+    messagebox("点击登录按钮")
+    while true do
+        XM.KeepScreen()
+        if XM.Find(5,"公告") then
+            if XM.Find(5,"登录按钮",true) then
+                messagebox("找到登录了")   
+                break
+            end
+        end
+        sleep(1000)
+        messagebox("暂未找到公告")
+    end
     
 end
 function main()
