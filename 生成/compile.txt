@@ -1,4 +1,6 @@
-﻿Unit={
+traceprint("BeginHoldupLogcat+441879843441879843")package.path = package.path..";"..getrcpath("rc:").."?.lua" 
+
+Unit={
 State={},
 Param={}
 }
@@ -79,7 +81,6 @@ function goChoseGamer()
     sleep(1000)
     XM.RndTap(863,604)
     sleep(1000)
-    -- 等待页面稳定
     
 end
 
