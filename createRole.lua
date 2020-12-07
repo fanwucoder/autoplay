@@ -11,13 +11,15 @@ function Unit.State.createRole(roleInfo)
     local accounts=readFileString(ACCOUNT_PATH)
     local tb_account=strSplit(accounts,"\n")
     local cur_cnt=readFileString(FINISH_PATH) or 1
-    -- if roleInfo.from=="CcreateRole1" then
-    --     -- 创建角色完毕返回
+    cur_cnt=tonumber(cur_cnt)
+    if roleInfo.from=="CcreateRole1" then
+        
+        -- 创建角色完毕返回
        
-    -- end
+    end
     
-    cur_cnt=cur_cnt+1
-    writeFileString(FINISH_PATH,tostring(cur_cnt),"w")
+    -- cur_cnt=cur_cnt+1
+    -- writeFileString(FINISH_PATH,tostring(cur_cnt),"w")
  
     if cur_cnt>#tb_account then
         lua_exit()

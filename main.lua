@@ -209,6 +209,7 @@ function Unit.State.loginAccount(accountInfo)
     --     end
         
     -- end
+    mSleep(5000)
     local cnt=0
     while cnt<3600/5 do
         if  waitPic1(551,4,639,52,"chose_user.png",2,1) then 
@@ -216,17 +217,23 @@ function Unit.State.loginAccount(accountInfo)
             nLog("角色选择页")
             break
         end
-        if  success==false and waitPic1(951,71,987,92,"ss_role_create.png",2,1)  then
+        if  success==false and  waitPic1(146,12,229,55,"ss_role_create.png",2,1)  then
             success=true
             nLog("角色创建页面")
             break
         end
+        -- 崩溃重启试试
+        if  appIsRunning(PACKAGES[APP_SS])==0 then
+            return "loginAccount"
+            
+        end
+        
         cnt=cnt+1
         mSleep(5000)
     end
     
     if accountInfo.from~=nil and  success then
-        Unit.Param[accountInfo.from].from="login"
+        Unit.Param[accountInfo.from].from="loginAccount"
         return accountInfo.from
     end
     Unit.Param.Error.errorType="loginAccountError"
@@ -239,7 +246,8 @@ function main_test()
    
   
     -- nLog("跳出循环")
-
+    --  waitPic1(551,4,639,52,"chose_user.png",2,1) 
+    --   waitPic1(951,71,987,92,"ss_role_create.png",2,1) 
     -- Unit.State.loginAccount(Unit.Param.loginAccount)
     --   local account="zhuandaqian4466"
     --   writeFileString("/sdcard/password.txt",""..account.."="..account,"a",1)
@@ -251,13 +259,14 @@ function main_test()
     --     rndSleep(3000,4000)
     -- end
     
-    -- snapshot("name_error.png",611,410,678,446)
-    -- mSleep(100)
-    -- waitPic1(611,410,678,446,"name_error.png")
+    -- snapshot("ss_role_create.png",146,12,229,55)
+    mSleep(100)
+    -- waitPic1(146,12,229,55,"ss_role_create.png")
 
   
-    -- ./adb    pull /sdcard/TouchSprite/res/name_error.png res
-    -- copy res/name_error.png C:\Users\admin\Documents\TSStudio\Projects\测试root功能
+    -- ./adb    pull /sdcard/TouchSprite/res/ss_role_create.png res
+    -- copy res/ss_role_create.png C:\Users\fan\Documents\TSStudio\Projects\autoplay
+    --  copy res/ss_role_create.png C:\Users\fan\Documents\TSStudio\Projects\autoplay
 end
 --   nLog("???")
 -- main_test()
