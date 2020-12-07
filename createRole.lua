@@ -128,7 +128,7 @@ function Unit.State.CcreateJob(accountInfo)
         
     end
     
-    if waitPic1(1071,618,1088,643,"ss_role_create_ok.png")==true then
+    if waitPic1(1071,618,1088,643,"ss_role_create_ok.png",10,1)==true then
         nLog("角色创建成功")
         stopSSApp()
     else 
