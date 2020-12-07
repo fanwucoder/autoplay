@@ -2,24 +2,28 @@ require("TSLib")
 Unit.Param.createRole={
     cur_cnt=0
 }
-
-
+-- FINISH_PATH="/sdcard/finish.txt"
+-- ACCOUNT_PATH="/sdcard/allPasswords.txt"
+FINISH_PATH=userPath().."/res/finish.txt"
+ACCOUNT_PATH=userPath().."/res/allPasswords.txt"
 function Unit.State.createRole(roleInfo)
-    local accounts=readFileString("/sdcard/allPasswords.txt")
+    nLog("设置账号，创建角色!")
+    local accounts=readFileString(ACCOUNT_PATH)
     local tb_account=strSplit(accounts,"\n")
-    local cur_cnt=readFileString("/sdcard/finish.txt") or 1
-    if roleInfo.from=="CcreateRole1" then
-        -- 创建角色完毕返回
-        cur_cnt=cur_cnt+1
-        writeFileString("/sdcard/finish.txt",tostring(cur_cnt),"w")
-    end
+    local cur_cnt=readFileString(FINISH_PATH) or 1
+    -- if roleInfo.from=="CcreateRole1" then
+    --     -- 创建角色完毕返回
+       
+    -- end
     
-   
+    cur_cnt=cur_cnt+1
+    writeFileString(FINISH_PATH,tostring(cur_cnt),"w")
  
     if cur_cnt>#tb_account then
         lua_exit()
         nLog("角色创建完毕")
     end
+  
     account=strSplit(tb_account[cur_cnt],"=")[1]
     Unit.Param.CcreateRole1={
         account=account,
@@ -73,7 +77,7 @@ name_tempale={ "宽宏大度", "冰清玉洁", "持之以恒", "锲而不舍", "
     "容光焕发", "神采奕奕", "悠然自得", "眉飞色舞", "喜笑颜开", "神采奕奕", "欣喜若狂", "呆若木鸡", 
     "喜出望外", "垂头丧气", "无动于衷", "勃然大怒", "能说会道", "巧舌如簧", "能言善辩", "滔滔不绝", 
     "伶牙俐齿", "出口成章", "语惊四座", "娓娓而谈", "妙语连珠", "口若悬河", "三顾茅庐", "铁杵成针",
-    "望梅止渴", "完璧归赵", "四面楚歌  ", "负荆请罪", "精忠报国", "手不释卷", "悬梁刺股", "凿壁偷光"}
+    "望梅止渴", "完璧归赵", "四面楚歌  ", "负荆请罪", "精忠报国", "手不释卷", "悬梁刺股"}
 ROLE_TYPE={
     {146,137,903,431},
     {146,137,1011,432},
@@ -84,8 +88,11 @@ ROLE_TYPE={
 
 }
 function Unit.State.CcreateJob(accountInfo)
-    if  waitPic1(951,71,987,92,"ss_role_create.png") then
-        return "CcreateJob"
+    nLog("开始创建角色")
+    if  waitPic1(551,4,639,52,"chose_user.png",5,1) then 
+        randomTap(1094,664)
+        rndSleep(2000,3000)
+        nLog("角色选择页")
     end
     -- 随机角色
     local zy=math.random(1,5)
@@ -96,15 +103,10 @@ function Unit.State.CcreateJob(accountInfo)
     rndSleep(2000,3000)
     
     -- 生成名字
-      
-
-
-    
     local base=math.random(1,60)
     local base1=math.random(1,60)
     local roleName=name_tempale[base]..base1
-    
-     
+    -- local roleName="凿壁偷光42"
     randomTap(999,576)
     rndSleep(2000,3000)
     inputText(roleName)
@@ -113,7 +115,19 @@ function Unit.State.CcreateJob(accountInfo)
     rndSleep(2000,3000)
     randomTap(1009,651)
     rndSleep(3000,5000)
+    randomTap(1145,658)
+    rndSleep(3000,5000)
     -- 创建成功
+    -- 退出app
+    if   waitPic1(611,410,678,446,"name_error.png",5,1) then
+        randomTap(636,425)
+        rndSleep(3000,5000)
+        randomTap(57,29)
+        rndSleep(3000,5000)
+        return "CcreateJob"
+        
+    end
+    
     if waitPic1(1071,618,1088,643,"ss_role_create_ok.png")==true then
         nLog("角色创建成功")
         stopSSApp()
@@ -125,7 +139,7 @@ function Unit.State.CcreateJob(accountInfo)
 
     end
     Unit.Param.CcreateRole1.from="CcreateJob"
-    -- 退出app
+ 
     return "CcreateRole1"
     -- 回到角色创建
  

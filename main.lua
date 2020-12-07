@@ -5,6 +5,14 @@ require("createRole")
 function main()
     init(1)
     Unit.State.Name="init"
+    -- Unit.State.Name="CcreateRole1"
+    
+    -- Unit.Param.CcreateRole1={
+    --     account="dalaoban21",
+    --     roleCount=1,
+    --     totalCount=4,
+    --     from="loginAccount"
+    -- }
     nLog("开始运行")
     while true do
         Unit.State.Name=processState(Unit.State,Unit.State.Name,Unit.Param[Unit.State.Name])
@@ -29,8 +37,11 @@ function Unit.State.Error(errorInfo)
     end
     
     while true    do 
-        nLog("未处理的错误"..errorInfo.errorType)   
+       
+        nLog("未处理的错误"..errorInfo.errorType)  
+        stopSSApp()
         mSleep(5000)
+        return "init"
     end
     
 end
@@ -130,6 +141,8 @@ function Unit.State.loginAccount(accountInfo)
     end
     randomTap(612,486)
     if waitPic1(755,405,806,437,"ss_register_ok1.png",5,1)==true    then 
+       
+        randomTap( 836,163)
         randomTap(869,161)
         rndSleep(3000,4000)
     end
@@ -142,10 +155,10 @@ function Unit.State.loginAccount(accountInfo)
         randomTap(804,610)
         rndSleep(1000,2000)
     end
-    -- if waitPic1(770,586,841,626,"ss_yinlogin.png")==true then
-    --     randomTap(804,610)
-    --     rndSleep(1000,2000)
-    -- end
+    if waitPic1(770,586,841,626,"ss_yinlogin.png",10,1)==true then
+        randomTap(804,610)
+        rndSleep(1000,2000)
+    end
     if waitPic1(614,77,635,94,"ss_gonggao.png",10,1) ==true then
         randomTap(631,595)
         rndSleep(1000,2000)
@@ -170,36 +183,81 @@ function Unit.State.loginAccount(accountInfo)
     touchUp(530,609)
     rndSleep(2000,3000)
     randomTap(661,515)
-    
-    if  waitPic1(951,71,987,92,"ss_role_create.png") then
-        nLog("角色创建页面")
+    local success=false
+    -- 排队
+    -- if  waitPic1(1071,618,1088,643,"ss_loginpd_ok.png",10,1) then
+    --     local cnt=0
+    --     while waitPic1(1071,618,1088,643,"ss_loginpd_ok.png",10,1)==true do
+    --         mSleep(10000)
+    --         nLog("排队等待"..(cnt*20).."s")
+    --         if cnt>3600/20 then
+    --             nLog("排队超时,重新登录")
+    --             stopSSApp()
+    --             return "loginAccount"
+    --         end
+    --         if  waitPic1(551,4,639,52,"chose_user.png",2,1) then 
+    --             success=true
+    --             nLog("角色选择页")
+    --             break
+    --         end
+    --         if  success==false and waitPic1(951,71,987,92,"ss_role_create.png",2,1)  then
+    --             success=true
+    --             nLog("角色创建页面")
+    --             break
+    --         end
+            
+    --     end
+        
+    -- end
+    local cnt=0
+    while cnt<3600/5 do
+        if  waitPic1(551,4,639,52,"chose_user.png",2,1) then 
+            success=true
+            nLog("角色选择页")
+            break
+        end
+        if  success==false and waitPic1(951,71,987,92,"ss_role_create.png",2,1)  then
+            success=true
+            nLog("角色创建页面")
+            break
+        end
+        cnt=cnt+1
+        mSleep(5000)
     end
     
-    if accountInfo.from~=nil then
+    if accountInfo.from~=nil and  success then
         Unit.Param[accountInfo.from].from="login"
         return accountInfo.from
     end
+    Unit.Param.Error.errorType="loginAccountError"
+    Unit.Param.Error.name="loginAccount"
+    return "Error"
 end
 function main_test()
     init(1)
     local account="zhuandaqian3233"
    
-   
-    
+  
+    -- nLog("跳出循环")
 
     -- Unit.State.loginAccount(Unit.Param.loginAccount)
     --   local account="zhuandaqian4466"
     --   writeFileString("/sdcard/password.txt",""..account.."="..account,"a",1)
     
     -- mSleep(3000)
-  
-    -- snapshot("ss_role_create_ok.png",1071,618,1088,643)
+    -- if waitPic1(755,405,806,437,"ss_register_ok1.png",5,1)==true    then 
+    --     randomTap(836,163)
+    --     randomTap(869,161)
+    --     rndSleep(3000,4000)
+    -- end
+    
+    -- snapshot("name_error.png",611,410,678,446)
     -- mSleep(100)
-    -- waitPic1(1071,618,1088,643,"ss_role_create_ok.png")
+    -- waitPic1(611,410,678,446,"name_error.png")
 
   
-    -- ./adb    pull /sdcard/TouchSprite/res/ss_role_create_ok.png res
-    -- copy res/ss_role_create_ok.png C:\Users\fan\Documents\TSStudio\Projects\autoplay\
+    -- ./adb    pull /sdcard/TouchSprite/res/name_error.png res
+    -- copy res/name_error.png C:\Users\admin\Documents\TSStudio\Projects\测试root功能
 end
 --   nLog("???")
 -- main_test()
