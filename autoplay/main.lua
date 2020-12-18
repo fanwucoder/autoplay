@@ -2,8 +2,11 @@ require "TSLib"
 require("common")
 require("register")
 require("createRole")
+require("beginAccount")
+require("playgame")
 function main()
     init(1)
+    setTable(H)
     Unit.State.Name="init"
     -- Unit.State.Name="CcreateRole1"
     
@@ -15,8 +18,19 @@ function main()
     -- }
     nLog("开始运行")
     while true do
-        Unit.State.Name=processState(Unit.State,Unit.State.Name,Unit.Param[Unit.State.Name])
         nLog("当前状态:"..tostring(Unit.State.Name))
+        local nextState=processState(Unit.State,Unit.State.Name,Unit.Param[Unit.State.Name])
+        nLog("nextState:"..nextState)
+        if Unit.Param[nextState].retry~=1 and Unit.State.Name~="init" then
+            
+            Unit.Param[nextState].task=Unit.Param[Unit.State.Name].task
+            Unit.Param[nextState].from=Unit.State.Name
+     
+        else
+            -- 重置重试状态
+            Unit.Param[nextState].retry=0
+        end
+        Unit.State.Name=nextState
         mSleep(100)
     end
     
@@ -25,9 +39,16 @@ Unit.Param.Error={
     errorType="空",
     state="空"
 }
-
+GLOBAL_TASK={
+    task="beginAccount"
+}
 
 function Unit.State.Error(errorInfo)
+    if errorInfo.errorType=="beginAccount" then
+        stopSSApp()
+        return errorInfo.task
+    end
+    
     if errorInfo.errorType=="create_error" then
         while true do
             nLog("不能注册账号了")
@@ -47,7 +68,7 @@ function Unit.State.Error(errorInfo)
 end
 
 Unit.Param.init={
-    task="register", --createRole 创建角色，register --注册账号 -- regAndcreate注册并创建
+    -- task="beginAccount", --createRole 创建角色，register --注册账号 -- regAndcreate注册并创建
     appType=APP_SS 
 }
 
@@ -59,17 +80,14 @@ function Unit.State.init(initParam)
     -- Unit.Param.beginTask.task="register"
     -- Unit.Param.beginTask.appType=APP_SS
     
-    local task="createRole"
+    local task="playGamer"
     local appType=APP_SS
-    Unit.Param.beginTask.task="createRole"
+    Unit.Param.beginTask.task=task
     Unit.Param.beginTask.appType=APP_SS
     
     return "beginTask"
 end
-Unit.Param.beginTask={
-    appType=2,
-    task="choseUser"
-}
+
 
 SERVER_ADDR="http://192.168.0.103:5000"
 
@@ -94,33 +112,22 @@ SERVER_ADDR="http://192.168.0.103:5000"
 --     end
   
 -- end
-
+Unit.Param.beginTask={
+    appType=2,
+}
 function Unit.State.beginTask(taskInfo)
-    if taskInfo.task=="register" then
-        return taskInfo.task
-    end
-    if taskInfo.task=="createRole" then
-        return taskInfo.task
-    end
-    -- return taskInfo.task
-    return "Error"
+    -- 任务初始化
+    return taskInfo.task
     
 end
 Unit.Param.loginAccount={
-    account="zhuandaqian3233",
-    next="Error",
+    account="dalaoban21",
     from="createRole",
     qu=109,
 }
 
-
-function Unit.State.loginAccount(accountInfo)
-    if startToAccount()~=true then
-        Unit.Param.Error.errorType="startError"
-        Unit.Param.Error.name="loginAccount"
-        return "Error"
-    end
-    local account=accountInfo.account
+function inputAccount(account)
+    nLog("开始输入账号:"..account)
     randomTap(638,281)
     for i=0,#account,1 do
         inputText(string.sub(account,i,i))
@@ -140,34 +147,9 @@ function Unit.State.loginAccount(accountInfo)
         rndSleep(300,600)
     end
     randomTap(612,486)
-    if waitPic1(755,405,806,437,"ss_register_ok1.png",5,1)==true    then 
-       
-        randomTap( 836,163)
-        randomTap(869,161)
-        rndSleep(3000,4000)
-    end
-    if waitPic1(516,81,582,119,"ss_register_ok.png",5,1)==true then
-        randomTap(804,610)
-        rndSleep(1000,2000)
-    
-    end
-    if waitPic1(770,586,841,626,"ss_yinlogin.png",10,1)==true then
-        randomTap(804,610)
-        rndSleep(1000,2000)
-    end
-    if waitPic1(770,586,841,626,"ss_yinlogin.png",10,1)==true then
-        randomTap(804,610)
-        rndSleep(1000,2000)
-    end
-    if waitPic1(614,77,635,94,"ss_gonggao.png",10,1) ==true then
-        randomTap(631,595)
-        rndSleep(1000,2000)
-    end
-    if waitPic1(614,77,635,94,"ss_gonggao.png",10,1) ==true then
-        randomTap(643,606)
-        rndSleep(1000,2000)
-    end
-    -- 选区逻辑
+    nLog("账号输入完毕")
+end
+function chosePlayArea()
     randomTap(617,403)
     rndSleep(2000,3000)
     for i=1,5,1 do 
@@ -183,6 +165,49 @@ function Unit.State.loginAccount(accountInfo)
     touchUp(530,609)
     rndSleep(2000,3000)
     randomTap(661,515)
+end
+
+function Unit.State.loginAccount(accountInfo)
+    if startToAccount()~=true then
+        Unit.Param.Error.errorType="startError"
+        Unit.Param.Error.name="loginAccount"
+        return "Error"
+    end
+    -- switchTSInputMethod(true);
+    local account=accountInfo.account
+    inputAccount(account)
+    -- switchTSInputMethod(false); 
+
+    
+    if waitPic1(755,405,806,437,"ss_register_ok1.png",5,2)==true    then 
+       
+        randomTap( 836,163)
+        randomTap(869,161)
+        rndSleep(3000,4000)
+    end
+    if waitPic1(516,81,582,119,"ss_register_ok.png",5,2)==true then
+        randomTap(804,610)
+        rndSleep(1000,2000)
+    
+    end
+    if waitPic1(770,586,841,626,"ss_yinlogin.png",10,3)==true then
+        randomTap(804,610)
+        rndSleep(1000,2000)
+    end
+    if waitPic1(770,586,841,626,"ss_yinlogin.png",10,3)==true then
+        randomTap(804,610)
+        rndSleep(1000,2000)
+    end
+    if waitPic1(614,77,635,94,"ss_gonggao.png",10,3) ==true then
+        randomTap(631,595)
+        rndSleep(1000,2000)
+    end
+    if waitPic1(614,77,635,94,"ss_gonggao.png",10,3) ==true then
+        randomTap(643,606)
+        rndSleep(1000,2000)
+    end
+    -- 选区逻辑
+    chosePlayArea()
     local success=false
     -- 排队
     -- if  waitPic1(1071,618,1088,643,"ss_loginpd_ok.png",10,1) then
@@ -224,6 +249,9 @@ function Unit.State.loginAccount(accountInfo)
         end
         -- 崩溃重启试试
         if  appIsRunning(PACKAGES[APP_SS])==0 then
+            nLog("重启app")
+            stopSSApp()
+            accountInfo.retry=1
             return "loginAccount"
             
         end
@@ -233,7 +261,6 @@ function Unit.State.loginAccount(accountInfo)
     end
     
     if accountInfo.from~=nil and  success then
-        Unit.Param[accountInfo.from].from="loginAccount"
         return accountInfo.from
     end
     Unit.Param.Error.errorType="loginAccountError"
@@ -242,31 +269,16 @@ function Unit.State.loginAccount(accountInfo)
 end
 function main_test()
     init(1)
-    local account="zhuandaqian3233"
-   
+    -- tap(46,61)
   
-    -- nLog("跳出循环")
-    --  waitPic1(551,4,639,52,"chose_user.png",2,1) 
-    --   waitPic1(951,71,987,92,"ss_role_create.png",2,1) 
-    -- Unit.State.loginAccount(Unit.Param.loginAccount)
-    --   local account="zhuandaqian4466"
-    --   writeFileString("/sdcard/password.txt",""..account.."="..account,"a",1)
-    
-    -- mSleep(3000)
-    -- if waitPic1(755,405,806,437,"ss_register_ok1.png",5,1)==true    then 
-    --     randomTap(836,163)
-    --     randomTap(869,161)
-    --     rndSleep(3000,4000)
-    -- end
-    
-    -- snapshot("ss_role_create.png",146,12,229,55)
-    mSleep(100)
-    -- waitPic1(146,12,229,55,"ss_role_create.png")
+    -- nLog(ret)
+    -- randomTap(638,281)
+    -- init(0)
+    -- local account="zhuandaqian3233"
+    -- local t=io.popen("curl http://192.168.0.103:5000 ")
+    -- local a = t:read("*all")
+    -- nLog(a)
 
-  
-    -- ./adb    pull /sdcard/TouchSprite/res/ss_role_create.png res
-    -- copy res/ss_role_create.png C:\Users\fan\Documents\TSStudio\Projects\autoplay
-    --  copy res/ss_role_create.png C:\Users\fan\Documents\TSStudio\Projects\autoplay
 end
 --   nLog("???")
 -- main_test()

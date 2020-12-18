@@ -1,26 +1,29 @@
 require("TSLib")
-Unit.Param.createRole={
-    cur_cnt=0
-}
 -- FINISH_PATH="/sdcard/finish.txt"
 -- ACCOUNT_PATH="/sdcard/allPasswords.txt"
 FINISH_PATH=userPath().."/res/finish.txt"
 ACCOUNT_PATH=userPath().."/res/allPasswords.txt"
-function Unit.State.createRole(roleInfo)
+Unit.Param.createRole={
+}
+
+function Unit.State.createRole(taskInfo)
+    
+   
+ 
+ 
+    if taskInfo.from=="CcreateRole1" then
+        nLog("角色创建完毕")
+        cur_cnt=cur_cnt+1
+        writeFileString(FINISH_PATH,tostring(cur_cnt),"w")
+        -- 创建角色完毕返回调用任务
+        return taskInfo.task
+    end
     nLog("设置账号，创建角色!")
     local accounts=readFileString(ACCOUNT_PATH)
     local tb_account=strSplit(accounts,"\n")
-    local cur_cnt=readFileString(FINISH_PATH) or 1
+    -- local cur_cnt=readFileString(FINISH_PATH) or 1
+    local cur_cnt=1
     cur_cnt=tonumber(cur_cnt)
-    if roleInfo.from=="CcreateRole1" then
-        
-        -- 创建角色完毕返回
-       
-    end
-    
-    -- cur_cnt=cur_cnt+1
-    -- writeFileString(FINISH_PATH,tostring(cur_cnt),"w")
- 
     if cur_cnt>#tb_account then
         lua_exit()
         nLog("角色创建完毕")
@@ -31,7 +34,6 @@ function Unit.State.createRole(roleInfo)
         account=account,
         roleCount=1,
         totalCount=4,
-        from="createRole"
     }
     return "CcreateRole1"
 end
@@ -144,6 +146,4 @@ function Unit.State.CcreateJob(accountInfo)
  
     return "CcreateRole1"
     -- 回到角色创建
- 
-    
 end
