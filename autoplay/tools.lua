@@ -61,6 +61,11 @@ function waitPic1(x1, y1, x2, y2, picpath, to, step)
         end)
     )
 end
+function execute_command(cmd)
+    local t = io.popen(cmd)
+    local a = t:read("*all")
+    return a
+end
 function save_img(x1, y1, x2, y2, picpath)
     snapshot("/sdcard/tmp.png", x1, y1, x2, y2)
     local url = string.format("%s/save_img?target=%s", SERVER_ADDR, picpath)
@@ -164,6 +169,50 @@ function findm(colors, click, rnd)
         return false
     end
 end
+function findg(...)
+    local Arr = {}
+    local Rnd, id, click = 5, "", false
+    if ... == nil then
+        return false
+    end
+    Arr = {...}
+    for i = 1, #Arr do
+        if type(Arr[i]) == "string" or type(Arr[i]) == "table" then
+            id = Arr[i]
+        elseif type(Arr[i]) == "number" then
+            Rnd = Arr[i]
+        elseif type(Arr[i]) == "boolean" then
+            click = Arr[i]
+        end
+    end
+    find_tab = Tools.tab[Tools.tabid]
+    find_id = nil
+    -- nLog(id)
+    if type(id) == "table" then
+        -- nLog("here")
+        find_tab = Tools.tab[id[1]]
+        find_id = id[2]
+    else
+        find_id = id
+    end
+    groups = nil
+    for i = 1, #find_tab do
+        if find_tab[i][1] == find_id then
+            showMessage("找到色点组的'"..find_id.."'数据")
+            groups = find_tab[i][2]
+            break
+        end
+    end
+    if groups then
+        for i = 1, #groups do
+            if find(Rnd, groups[i], click) then
+                showMessage("找到色点组:"..find_id)
+                return true
+            end
+        end
+    end
+    return false
+end
 
 function find(...)
     local Arr = {}
@@ -194,17 +243,17 @@ function find(...)
     -- nLog("图色id:" .. find_id)
     for i = 1, #find_tab do
         if find_tab[i][1] == find_id then
-            -- nLog("判断色点：" .. find_id)
+            nLog("取到色点数据：" .. find_id)
             colors = find_tab[i]
             if type(colors[2]) == "number" then
-                return findm(colors, click,Rnd)
+                return findm(colors, click, Rnd)
             elseif type(colors[2]) == "table" then
                 keepScreen(true)
                 local ret = multiColor(colors[2])
                 keepScreen(false)
                 -- nLog("是否点击"..tostring(click)..tostring(ret))
                 if click and ret then
-                    nLog("点击"..find_id)
+                    nLog("点击" .. find_id)
                     randomTap(colors[3][1], colors[3][2], Rnd)
                 end
                 return ret
@@ -318,6 +367,14 @@ function convert_tab(tab)
         mSleep(200)
     end
 end
+function showMessage(msg)
+    if message_log then
+        nLog(msg)
+    end
+
+    showTextView(tostring(msg), "abc", 60, 679, 261, 703, "left", "eeeeee", "000000", 10, 1, 0.5, 0, 50)
+end
+
 -- H = {}
 -- H["进副本"] = {
 --     -- {"副本返回", 0.8, 14, 20, 55, 64, "0x243450",  "4|8|0xb4945f,-3|18|0x172438"},

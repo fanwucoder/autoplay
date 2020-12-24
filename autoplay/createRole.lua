@@ -1,4 +1,5 @@
 require("TSLib")
+require("common")
 -- FINISH_PATH="/sdcard/finish.txt"
 -- ACCOUNT_PATH="/sdcard/allPasswords.txt"
 FINISH_PATH=userPath().."/res/finish.txt"
