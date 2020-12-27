@@ -281,10 +281,10 @@ function doPalyOne(area, subarea, name, level, times)
         if find(5, {"上士登录页", "拜师"}, true) then
             showMessage("关闭拜师")
         end
-        if find(5,"拜师",true) then
-          showMessage("关闭拜师")
+        if find(5, "拜师", true) then
+            showMessage("关闭拜师")
         end
-        
+
         if find("变强卡屏", 5, true) then
             showMessage("变强卡屏")
             return false
@@ -486,10 +486,11 @@ function doRePalyOne(bool)
 end
 function wait_xm()
 end
-function wait_ss(xm)
+function wait_ss(xm, timeout)
     -- 等待上士登录账号
     showMessage("等待上士登录")
     SetTableID("上士登录页")
+    cnt = 0
     while true do
         -- 登录页
 
@@ -540,7 +541,11 @@ function wait_ss(xm)
             return true
         end
         mSleep(1000)
-        mSleep(1000)
+        cnt = cnt + 1
+        if timeout ~= nil and cnt > timeout then
+            return false
+        end
+
         -- nLog("??")
     end
     -- mSleep(5000)
@@ -763,68 +768,3 @@ function set_base_picture()
     randomsTap(1116, 133)
     mSleep(1000)
 end
--- closeGG()
--- doRePalyOne(false)
--- doPalyOne("赫顿城", "暮光", "幽寒", "普通", 2)
--- waitPlayBegin()
--- waitPlayEnd()
--- closeGG()
--- set_base_picture()
--- SetTableID("进副本")
--- checkautoplay()
--- showMessage("xxx")
--- if find("变强卡屏", 5, true) then
---     showMessage("变强卡屏", 0, 700)
-
--- end
--- showTextView("变强卡屏","aa")
-
--- if find(5, {"上士登录页", "拜师"}, true) then
---     showMessage("关闭拜师")
--- end
--- randomTap(711,338)
-
--- setTable(H)
--- closeGG()
---   if multiColor({{918, 177, 0xddbb88}, {926, 187, 0xb79663}, {913, 195, 0xb18a54}, {932, 178, 0xc9aa7b}}) then
---             showMessage("月卡弹出？")
---             randomsTap(918, 177)
---   end
---     showMessage(string.format("0x%X",getColor(918, 177)))
--- todo 配置技能
--- init(1)
--- setTable(H)
--- waitPlayEnd()
--- for i = 1, 300 do
---     if find(5, {"登录广告", "精力"}, false) then
---         showMessage("已经超时回城了")
---     -- if beginPlayOne(area, subarea, name, level) ~= true then
---     -- end
---     end
--- end
--- -- if multiColor({{918, 177, 0xddbb88}, {926, 187, 0xb79663}, {913, 195, 0xb18a54}, {932, 178, 0xc9aa7b}}) then
---     randomsTap(918, 177)
--- end
--- if find(5, {"登录广告", "精力"}, false) then
---     showMessage("已经超时回城了")
---     if beginPlayOne(area, subarea, name, level) ~= true then
---         return false
---     end
--- end
--- fenjiezb(1,true,true,true)
--- mSleep(3000)
-
--- clear_package({true, true, true, true}, {false, true, true, true})
--- checkautoplay()
--- checkautoplay()
--- doPalyOne("赫顿城", "暮光", "幽寒", "普通", 3)
--- if multiColor({{529, 43, 0x101334}, {87, 37, 0x301630}, {1227, 84, 0xefde99}, {1188, 91, 0x3e3c30}}) then
---     showMessage("副本已经开始")
--- -- return true
--- end
--- setTable(H)
--- SetTableID("进副本")
-
--- init(1)
--- setTable(H)
---

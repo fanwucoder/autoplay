@@ -1,4 +1,4 @@
-task::playGamer
+task::startZL1
 role::10
 副本::赫顿城,暮光,黄昏,普通,999,true
 副本方式::指定
@@ -8,3 +8,5 @@ commonapi_addr::http://192.168.0.103:5000
 commonmnq_path::D:/Program Files/Microvirt/MEmu
 commonscript_path::C:\Users\fan\Documents\TSStudio\Projects\autoplay
 appType::小米
+zl_account::13259490164
+zl_password::fanwu123

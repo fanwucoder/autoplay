@@ -80,11 +80,13 @@ Unit.Param.init = {
 function Unit.State.init(initParam)
     local task = PLAY_TASK_INFO.task
     Unit.Param.beginTask.task = task
+    Unit.Param[task].zl_account = PLAY_TASK_INFO.zl_account
+    Unit.Param[task].zl_password = PLAY_TASK_INFO.zl_password
     Unit.Param[task].appType = PLAY_TASK_INFO.appType
     Unit.Param[task].taskRole = PLAY_TASK_INFO.role_info
     Unit.Param[task].max_role = PLAY_TASK_INFO.max_role
     writeFileString("/sdcard/touch_status.txt", "start\n", "w")
-    return "beginTask"
+    return task
 end
 
 -- SERVER_ADDR = "http://192.168.0.103:5000"
@@ -339,5 +341,6 @@ end
 -- main_test()
 -- runApp("com.hegu.dnl.mi",true)
 main()
+-- init(0)
 
--- main()
+
