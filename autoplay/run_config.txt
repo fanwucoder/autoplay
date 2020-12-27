@@ -1,0 +1,10 @@
+task::playGamer
+role::10
+副本::赫顿城,暮光,黄昏,普通,999,true
+副本方式::指定
+分解装备::true,true,true,true
+出售装备::false,true,true,true
+commonapi_addr::http://192.168.0.103:5000
+commonmnq_path::D:/Program Files/Microvirt/MEmu
+commonscript_path::C:\Users\fan\Documents\TSStudio\Projects\autoplay
+appType::小米

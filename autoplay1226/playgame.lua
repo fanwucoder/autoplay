@@ -21,7 +21,36 @@ SUB_MAP1 = {
     },
     ["暮光"] = {["灼热"] = {1104, 411}, ["幽寒"] = {535, 374}, ["黄昏"] = {775, 566}, ["恶毒"] = {491, 168}}
 }
-Unit.Param.playGamer = {}
+Unit.Param.playGamer = {
+    ["taskRole"] = {
+        {
+            ["role"] = 1,
+            ["副本"] = {"赫顿城", "暮光", "黄昏", "普通", 999, true},
+            ["分解装备"] = {true, true, true, true},
+            ["出售装备"] = {false, true, true, true}
+        },
+        {
+            ["role"] = 2,
+            ["副本"] = {"赫顿城", "暮光", "幽寒", "普通", 999, true},
+            ["分解装备"] = {true, true, true, true},
+            ["出售装备"] = {false, true, true, true}
+        },
+        {
+            ["role"] = 3,
+            ["副本"] = {"赫顿城", "暮光", "幽寒", "普通", 999, true},
+            ["分解装备"] = {true, true, true, true},
+            ["出售装备"] = {false, true, true, true}
+        },
+        {
+            ["role"] = 4,
+            ["副本"] = {"赫顿城", "暮光", "幽寒", "普通", 999, true},
+            ["分解装备"] = {true, true, true, true},
+            ["出售装备"] = {false, true, true, true}
+        }
+    },
+    max_role = 1,
+    appType = APP_SS
+}
 
 function Unit.State.playGamer(taskInfo)
     showMessage("初始化刷副本的信息！")
@@ -71,14 +100,17 @@ function Unit.State.waitForLogin(taskInfo)
         showMessage("启动游戏出错！")
         return "Error"
     end
-    return "playFinish"
+    lua_exit()
 end
 
-Unit.Param.playFinish = {}
+Unit.Param.playFinish = {
+ 
+}
 -- 等待登录进入游戏
 function Unit.State.playFinish(taskInfo)
     -- 挂机完毕
     writeFileString("/sdcard/touch_status.txt", "finish\n", "a")
+
 end
 
 Unit.Param.playGamerOne = {
@@ -281,10 +313,6 @@ function doPalyOne(area, subarea, name, level, times)
         if find(5, {"上士登录页", "拜师"}, true) then
             showMessage("关闭拜师")
         end
-        if find(5,"拜师",true) then
-          showMessage("关闭拜师")
-        end
-        
         if find("变强卡屏", 5, true) then
             showMessage("变强卡屏")
             return false
@@ -453,11 +481,11 @@ function doRePalyOne(bool)
         closeSR()
         -- if multiColor({{1119, 37, 0xffffff}, {1126, 43, 0x89898c}, {1126, 46, 0x0b1030}, {1113, 45, 0x05081a}}) then
         -- end
-        if find("商人没精力", 5, true) then
+        if find("商人没精力",5,true) then
             showMessage("卡商人没精力了，回城")
             return true
         end
-
+        
         if find("副本结束", 5, false) then
             if bool then
                 showMessage("点继续")
@@ -592,11 +620,6 @@ function closeGG()
         end
         if find("决斗段位", true) then
             showMessage("GG")
-            mSleep(1000)
-            break
-        end
-        if find("工会地下城", true) then
-            showMessage("工会地下城")
             mSleep(1000)
             break
         end
@@ -763,7 +786,6 @@ function set_base_picture()
     randomsTap(1116, 133)
     mSleep(1000)
 end
--- closeGG()
 -- doRePalyOne(false)
 -- doPalyOne("赫顿城", "暮光", "幽寒", "普通", 2)
 -- waitPlayBegin()

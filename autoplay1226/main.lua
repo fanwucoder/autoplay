@@ -78,16 +78,15 @@ Unit.Param.init = {
 }
 
 function Unit.State.init(initParam)
-    local task = PLAY_TASK_INFO.task
+
+    local task = "playGamer"
     Unit.Param.beginTask.task = task
-    Unit.Param[task].appType = PLAY_TASK_INFO.appType
-    Unit.Param[task].taskRole = PLAY_TASK_INFO.role_info
-    Unit.Param[task].max_role = PLAY_TASK_INFO.max_role
+    Unit.Param[task].appType = initParam.appType
     writeFileString("/sdcard/touch_status.txt", "start\n", "w")
     return "beginTask"
 end
 
--- SERVER_ADDR = "http://192.168.0.103:5000"
+SERVER_ADDR = "http://192.168.0.103:5000"
 
 -- function afterLogin()
 --     XM.Print("等待账号")

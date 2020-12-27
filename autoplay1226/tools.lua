@@ -6,6 +6,7 @@ Unit = {
     State = {},
     Param = {}
 }
+SERVER_ADDR = "http://192.168.0.103:5000"
 -- Param.state={
 --     from="", 来源状态
 --     task="", 当前正在执行的task
@@ -126,23 +127,12 @@ function SetTableID(id)
     Tools.tabid = id
 end
 function nLogTab(tab)
-    content=tab2str(tab)
-    -- runinfo
-    wLog("runinfo",content)
-    nLog(content)
-end
-function tab2str(tab)
     local content = ""
     for key, value in pairs(tab) do
-        if type(value) == "table" then
-            content=content.."\n"..key..":"..tab2str(value)..",\n"
-        else
-            content = content .. key .. ":" .. tostring(value) .. ","
-        end
+        content = content .. key .. ":" .. tostring(value) .. ","
     end
-    return "{" .. content .. "}"
+    nLog("{" .. content .. "}")
 end
-
 function findm(colors, click, rnd)
     if rnd == nil then
         rnd = 5

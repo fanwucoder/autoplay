@@ -11,8 +11,8 @@ H["进副本"] = {
     {"副本返回", 0.9, 19, 30, 40, 60, "0x273755-0x111111", "7|9|0xBE9E6B-0x111111"},
     {"开始挑战", 0.9, 1003, 614, 1022, 648, "0xEDA314-0x111111", "0|14|0xDA8C11-0x111111"},
     {"血条", 0.8, 83, 38, 91, 65, "0xb81512", "-1|14|0x16376a"},
-    {"副本血条", {{85, 44, 0xb81313}, {86, 62, 0x18386d}}, {0, 0}},
-    {"副本结束", {{193, 116, 0xf0b02d}, {192, 96, 0x243755}, {205, 58, 0x192535}}, {0, 0}},
+    {"副本血条",{{85, 44, 0xb81313}, {86, 62, 0x18386d}},{0,0}},
+    {"副本结束",{{193, 116, 0xf0b02d},{192, 96, 0x243755},{205, 58, 0x192535}},{0,0}},
     {"未通关", 0.9, 27, 261, 52, 290, "0x4C4C4C", "-3|14|0xD0D0D0"},
     {"选择卡牌", 0.9, 556, 35, 575, 59, "0x131939-0x111111", "2|7|0xffffff-0x111111,0|11|0x161538-0x111111"},
     {"再来一次", 0.9, 1043, 128, 1051, 139, "0x1F286E-0x111111", "1|4|0xF2F2F5-0x111111,-1|8|0x172062-0x111111"},
@@ -22,12 +22,7 @@ H["进副本"] = {
     {"图刷完了", {{1186, 48, 0x162168}, {1197, 143, 0x2e2b29}, {1200, 241, 0xd58914}}, {1100, 55}},
     {"变强卡屏", {{778, 450, 0x101a28}, {804, 458, 0x15418a}, {919, 209, 0x101a28}, {918, 189, 0xc2a171}}, {917, 191}},
     {"自动副本", {{34, 268, 0xffd278}, {48, 268, 0xffffbb}, {40, 286, 0xffff67}, {27, 277, 0xffbb2a}}, {0, 0}},
-    {
-        "商人没精力",
-        {{190, 117, 0xedaa2a}, {190, 110, 0xfbea84}, {995, 233, 0xda9113}, {1062, 144, 0x7e7e7e}, {1092, 145, 0x7f7f7f}},
-        {1091, 48}
-    },
-{"拜师",{{637, 275, 0x101a28},{477, 388, 0x101a28},{571, 431, 0x1152be},{786, 433, 0x104fb7}},{760,432}}
+    {"商人没精力",{{190, 117, 0xedaa2a},{190, 110, 0xfbea84},{995, 233, 0xda9113},{1062, 144, 0x7e7e7e},{1092, 145, 0x7f7f7f}},{1091,48}}
 }
 -- H["进副本"] = {
 --     {"副本返回", {{26, 40, 0x202f49}, {29, 47, 0x5b411a}, {23, 51, 0x17253a}}, {26, 40}},
@@ -173,7 +168,6 @@ H["上士登录页"] = {
     {"登录人满", {{1173, 57, 0x2d100e}, {725, 248, 0x101a28}, {699, 476, 0x134393}, {108, 53, 0x070e16}}, {641, 481}},
     {"拜师", {{717, 277, 0x101a28}, {603, 448, 0x12469c}, {826, 457, 0x163f88}, {104, 8, 0x005c00}}, {524, 460}},
     {"决斗段位1", {{694, 648, 0x1148a3}, {822, 648, 0x280d0f}, {756, 100, 0xffcf7b}, {640, 90, 0xe5a36a}}, {643, 654}},
-    {"工会地下城",{{877, 563, 0xf7c52e},{1192, 130, 0xc8a979},{104, 11, 0x005c00},{702, 452, 0x5b2a40},{779, 462, 0x54263b}},{1197,138}},
     {"绑定手机g", {"绑定手机", "绑定手机xy1", "绑定手机xy", "绑定手机1"}}
 }
 H["分解装备"] = {
@@ -230,97 +224,25 @@ function stopSSApp()
     closeApp(PACKAGES[APP_SS])
     rndSleep(3000, 5000)
 end
-PLAY_TASK_INFO = {}
-
+PLAY_TASK_INFO={
+    ["role_info"]={
+          {
+            ["role"] = 1,
+            ["副本"] = {"赫顿城", "暮光", "幽寒", "普通", 1, true},
+            ["分解装备"] = {true, true, true, true},
+            ["出售装备"] = {false, true, true, true}
+        }
+    }
+}
 function init_config()
     showMessage("初始化全局公共配置")
     init(1)
     setTable(H)
     message_log = true
-    local file = userPath() .. "/res/run_config.txt"
-    local config_data = readFileString(file)
-    local lines = strSplit(config_data, "\n")
-    for i = 1, #lines do
-        line = lines[i]
-        showMessage("读取配置:" .. line)
-        local kv = strSplit(line, "::")
-        k = kv[1]
-        v = kv[2]
-        if k == "task" then
-            PLAY_TASK_INFO["task"] = v
-        end
-        if k == "role" then
-            PLAY_TASK_INFO["role"] = strSplit(v, ",")
-            PLAY_TASK_INFO["max_role"] = #PLAY_TASK_INFO["role"]
-        end
-        if k == "commonapi_addr" then
-            SERVER_ADDR = v
-        end
-        if k == "副本" then
-            v1 = strSplit(v, ",")
-            nLogTab(v1)
-            PLAY_TASK_INFO["副本"] = {
-                v1[1],
-                v1[2],
-                v1[3],
-                v1[4],
-                tonumber(v1[5]),
-                v1[6] == "true"
-            }
-        end
-        if k == "副本方式" then
-            PLAY_TASK_INFO["副本方式"] = v
-        end
-        if k == "分解装备" then
-            v1 = strSplit(v, ",")
-            nLogTab(v1)
-            PLAY_TASK_INFO["分解装备"] = {
-                v1[1] == "true",
-                v1[2] == "true",
-                v1[3] == "true",
-                v1[4] == "true"
-            }
-        end
-        if k == "出售装备" then
-            v1 = strSplit(v, ",")
-            PLAY_TASK_INFO["出售装备"] = {
-                v1[1] == "true",
-                v1[2] == "true",
-                v1[3] == "true",
-                v1[4] == "true"
-            }
-        end
-        if k == "appType" then
-            if v == "小米" then
-                PLAY_TASK_INFO["appType"] = APP_XM
-            elseif v == "上士" then
-                PLAY_TASK_INFO["appType"] = APP_SS
-            end
-            nLog(tostring(v == "小米"))
-        end
-    end
-
-    roles = PLAY_TASK_INFO["role"]
-    PLAY_TASK_INFO["role_info"] = {}
-
-    for i = 1, #roles do
-        PLAY_TASK_INFO["role_info"][i] = {
-            ["role"] = roles[i],
-            ["副本"] = PLAY_TASK_INFO["副本"],
-            ["分解装备"] = PLAY_TASK_INFO["分解装备"],
-            ["出售装备"] = PLAY_TASK_INFO["出售装备"],
-            ["副本方式"] = PLAY_TASK_INFO["副本方式"]
-        }
-    end
-    -- table.remove(PLAY_TASK_INFO, "role")
-    -- table.remove(PLAY_TASK_INFO, "副本")
-    -- table.remove(PLAY_TASK_INFO, "分解装备")
-    -- table.remove(PLAY_TASK_INFO, "出售装备")
-    -- table.remove(PLAY_TASK_INFO, "副本方式")
-
-    initLog("runinfo", 1)
-    nLogTab(PLAY_TASK_INFO)
+    local file = userPath() .. "/res/api_addr.txt"
+    SERVER_ADDR = readFileString(file)
+    initLog("runinfo", 1);  
+   
     --读取文件内容，返回全部内容的 string
 end
-nLogTab({["1"] = {["1"] = "1"}, ["2"] = 2})
 init_config()
