@@ -89,16 +89,17 @@ function Unit.State.startZL1(taskInfo)
     )
 
     if x ~= -1 then
-        nLog("找到紫龙:" .. (x + 30) .. ":" .. (y + 30))
+        showMessage("找到紫龙:" .. (x + 30) .. ":" .. (y + 30))
 
         tap(x + 30, y + 30)
     else
-        nLog("没找到紫龙")
+        showMessage("没找到紫龙")
     end
 
     while true do
-        if multiColor({{201, 71, 0x66330f}, {629, 538, 0xffffff}, {702, 76, 0x666666}}) then
-            nLog("紫龙")
+        if multiColor({{201, 71, 0x66330f}, {629, 538, 0xffffff}, {702, 76, 0x666666}}) or
+        multiColor({{239, 77, 0x66330f},{639, 72, 0x666666},{617, 516, 0xffffff}})  then
+            showMessage("关闭紫龙广告")
             tap(562, 406)
             mSleep(2000)
             break
