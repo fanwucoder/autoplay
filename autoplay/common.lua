@@ -322,5 +322,4 @@ function init_config()
     nLogTab(PLAY_TASK_INFO)
     --读取文件内容，返回全部内容的 string
 end
-nLogTab({["1"] = {["1"] = "1"}, ["2"] = 2})
 init_config()
