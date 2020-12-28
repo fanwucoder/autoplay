@@ -30,10 +30,10 @@ function Unit.State.playGamer(taskInfo)
         showMessage("执行完毕，退出脚本")
         return "playFinish"
     end
-    -- if runAppWithoutLogin(taskInfo.appType) ~= true then
-    --     showMessage("启动游戏出错！")
-    --     return "Error"
-    -- end
+    if runAppWithoutLogin(taskInfo.appType) ~= true then
+        showMessage("启动游戏出错！")
+        return "Error"
+    end
 
     snapshot("/sdcard/start_login_ok.png", 0, 0,1270, 700)
     mSleep(2000)
