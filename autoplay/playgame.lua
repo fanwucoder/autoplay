@@ -120,6 +120,7 @@ function Unit.State.playGamerOne(taskInfo)
 
     clear_package(fj, cs)
     mSleep(1000)
+    snapshot(""..taskInfo.cur.."lastinfo.png",0,0,1280,720)
     goChoseGamer()
     SetTableID("上士登录页")
     if waitColor("角色选择", false, 30 * 60, 10) then
