@@ -1,4 +1,4 @@
-task::startZL1
+task::playGamer
 role::10
 副本::赫顿城,暮光,黄昏,普通,999,true
 副本方式::指定

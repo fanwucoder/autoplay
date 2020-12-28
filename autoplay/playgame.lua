@@ -30,10 +30,13 @@ function Unit.State.playGamer(taskInfo)
         showMessage("执行完毕，退出脚本")
         return "playFinish"
     end
-    if runAppWithoutLogin(taskInfo.appType) ~= true then
-        showMessage("启动游戏出错！")
-        return "Error"
-    end
+    -- if runAppWithoutLogin(taskInfo.appType) ~= true then
+    --     showMessage("启动游戏出错！")
+    --     return "Error"
+    -- end
+
+    snapshot("/sdcard/start_login_ok.png", 0, 0,1270, 700)
+    mSleep(2000)
     -- bid, _ = frontAppBid()
 
     -- if bid ~= PACKAGES[APP_SS] then
@@ -108,8 +111,10 @@ function Unit.State.playGamerOne(taskInfo)
     randomTap(637, 666)
     mSleep(1000)
     closeGG()
-    snapshot("start_game_" .. taskInfo.cur .. ".png", 0, 0, 1280, 720)
-    if role_idx == 1 then
+
+    snapshot("/sdcard/start_game_" .. taskInfo.cur .. ".png", 0, 0, 1270, 700)
+    mSleep(2000)
+    if taskInfo.cur == 1 then
         set_base_picture()
         mSleep(2000)
     end
@@ -121,7 +126,9 @@ function Unit.State.playGamerOne(taskInfo)
 
     clear_package(fj, cs)
     mSleep(1000)
-    snapshot("finish_game_" .. taskInfo.cur .. ".png", 0, 0, 1280, 720)
+
+    snapshot("/sdcard/finish_game_" .. taskInfo.cur .. ".png", 0, 0, 1270, 700)
+    mSleep(2000)
     goChoseGamer()
     SetTableID("上士登录页")
     if waitColor("角色选择", false, 30 * 60, 10) then
