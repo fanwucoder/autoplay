@@ -108,6 +108,7 @@ function Unit.State.playGamerOne(taskInfo)
     randomTap(637, 666)
     mSleep(1000)
     closeGG()
+    snapshot("start_game_" .. taskInfo.cur .. ".png", 0, 0, 1280, 720)
     if role_idx == 1 then
         set_base_picture()
         mSleep(2000)
@@ -120,7 +121,7 @@ function Unit.State.playGamerOne(taskInfo)
 
     clear_package(fj, cs)
     mSleep(1000)
-    snapshot(""..taskInfo.cur.."lastinfo.png",0,0,1280,720)
+    snapshot("finish_game_" .. taskInfo.cur .. ".png", 0, 0, 1280, 720)
     goChoseGamer()
     SetTableID("上士登录页")
     if waitColor("角色选择", false, 30 * 60, 10) then
