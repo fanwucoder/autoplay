@@ -82,6 +82,7 @@ Unit.Param.playFinish = {}
 function Unit.State.playFinish(taskInfo)
     -- 挂机完毕
     writeFileString("/sdcard/touch_status.txt", "finish\n", "a")
+    return "quit"
 end
 
 Unit.Param.playGamerOne = {
@@ -123,11 +124,11 @@ function Unit.State.playGamerOne(taskInfo)
     end
     wait_bak()
     mSleep(1000)
-
+    snapshot("/sdcard/finish_game_" .. taskInfo.cur .. ".png", 0, 0, 1270, 700)
     clear_package(fj, cs)
     mSleep(1000)
 
-    snapshot("/sdcard/finish_game_" .. taskInfo.cur .. ".png", 0, 0, 1270, 700)
+
     mSleep(2000)
     goChoseGamer()
     SetTableID("上士登录页")
