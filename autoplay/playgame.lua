@@ -779,14 +779,13 @@ function set_base_picture()
     mSleep(1000)
 end
 function learn_skills()
-        local today = tonumber(os.date("%d", os.time()))
+    local today = tonumber(os.date("%d", os.time()))
     if today % 2 ~= 0 then
         return
     end
 
     mSleep(1000)
     -- writeFileString(file,str,mode,wrap)
-
 
     if (isColor(1185, 648, 0xff0000, 90)) ~= true then
         return
@@ -795,8 +794,8 @@ function learn_skills()
     for i = 1, #posistion do
         xy = posistion[i]
         randomTap(xy[1], xy[2])
-        mSleep(1000)
+        mSleep(1500)
     end
 end
 -- set_base_picture()
-learn_skills()
+-- learn_skills()
