@@ -35,7 +35,7 @@ function Unit.State.playGamer(taskInfo)
         return "Error"
     end
 
-    snapshot("/sdcard/start_login_ok.png", 0, 0,1270, 700)
+    snapshot("/sdcard/start_login_ok.png", 0, 0, 1270, 700)
     mSleep(2000)
     -- bid, _ = frontAppBid()
 
@@ -119,6 +119,7 @@ function Unit.State.playGamerOne(taskInfo)
         set_base_picture()
         mSleep(2000)
     end
+    learn_skills()
     if fb[6] then
         doPalyOne(fb[1], fb[2], fb[3], fb[4], fb[5])
     end
@@ -127,7 +128,6 @@ function Unit.State.playGamerOne(taskInfo)
     snapshot("/sdcard/finish_game_" .. taskInfo.cur .. ".png", 0, 0, 1270, 700)
     clear_package(fj, cs)
     mSleep(1000)
-
 
     mSleep(2000)
     goChoseGamer()
@@ -778,3 +778,25 @@ function set_base_picture()
     randomsTap(1116, 133)
     mSleep(1000)
 end
+function learn_skills()
+        local today = tonumber(os.date("%d", os.time()))
+    if today % 2 ~= 0 then
+        return
+    end
+
+    mSleep(1000)
+    -- writeFileString(file,str,mode,wrap)
+
+
+    if (isColor(1185, 648, 0xff0000, 90)) ~= true then
+        return
+    end
+    posistion = {{1162, 668}, {1161, 673}, {948, 674}, {752, 462}, {54, 34}}
+    for i = 1, #posistion do
+        xy = posistion[i]
+        randomTap(xy[1], xy[2])
+        mSleep(1000)
+    end
+end
+-- set_base_picture()
+learn_skills()
