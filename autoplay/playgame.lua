@@ -745,6 +745,7 @@ function clear_package(fj, cs)
         if fj[1] ~= true and cs[1] ~= true then
             break
         end
+        use_zb_all()
         if fj[1] then
             showMessage("分解装备")
             if fenjiezb(1, fj[2], fj[3], fj[4]) == true then
@@ -757,7 +758,7 @@ function clear_package(fj, cs)
                 showMessage("没装备了")
             end
         end
-
+        
         if get_email() ~= true then
             showMessage("没邮件了")
             break
@@ -797,5 +798,86 @@ function learn_skills()
         mSleep(1500)
     end
 end
+function get_zb_type(x, y)
+    x = x + 5
+    y = y + 5
+    if (isColor(x, y, 0x4d3428, 90)) then
+        return "ss"
+    end
+
+    if (isColor(x, y, 0x612d44, 90)) then
+        return "fz"
+    end
+    if (isColor(x, y, 0x412c43, 90)) then
+        return "zh"
+    end
+    if (isColor(x, y, 0x1c3a4c, 90)) then
+        return "lz"
+    end
+    if (isColor(x, y, 0x4a525e, 90)) then
+        return "bz"
+    end
+    return ""
+end
+function is_sugg(x, y)
+    x = x + 69
+    y = y + 66
+    return isColor(x, y, 0x6ac100)
+end
+function use_zb(x, y)
+    x = x + 20
+    y = y + 20
+    randomTap(x, y)
+    rndSleep(1000)
+
+    if multiColor({{475, 375, 0x161b2c}, {580, 76, 0x154393}}) then
+        randomTap(572, 71)
+        rndSleep(1000)
+    end
+
+    if multiColor({{957, 376, 0x161b2c}, {1082, 71, 0x13479e}}) then
+        randomTap(1113, 77)
+        rndSleep(1000)
+    end
+
+    if multiColor({{748, 462, 0x163c7d}, {743, 385, 0x101a28}}) then
+        randomTap(751, 452)
+        rndSleep(1000)
+    end
+    rndSleep(2000)
+end
+
+function use_zb_all(not_open)
+    if not_open ~= true then
+        randomTap(1222, 672)
+        mSleep(2000)
+    end
+    xstep = 95
+    ystep = 96
+    startx, starty = 797, 135
+    nLog(1057 - 988)
+    nLog(392 - 326)
+    mSleep(200)
+    for i = 0, 24 do
+        local row, other = math.modf(i / 5)
+        local col = i % 5
+        local x = startx + col * xstep
+        local y = starty + row * ystep
+        local zb_lx = get_zb_type(x, y)
+        -- nLog("x="..(x+5).."y="..(y+5))
+        local sugg = is_sugg(x, y)
+        if sugg and (zb_lx == "lz" or zb_lx == "zh" or zb_lx == "bz" or zb_lx == "ss") then
+            showMessage("穿戴装备r:" .. row .. ",c:" .. col .. ",type:" .. zb_lx)
+            use_zb(x, y)
+            use_zb_all(true)
+            return
+        end
+        mSleep(200)
+    end
+    randomTap(57, 24)
+    mSleep(5000)
+end
+-- use_zb_all()
+-- use_zb(1121,562)
 -- set_base_picture()
 -- learn_skills()
