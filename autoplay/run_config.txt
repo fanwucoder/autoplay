@@ -1,5 +1,5 @@
 task::playGamer
-role::10
+role::17
 副本::赫顿城,暮光,黄昏,普通,999,true
 副本方式::指定
 分解装备::true,true,true,true

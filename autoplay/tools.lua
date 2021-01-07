@@ -126,16 +126,16 @@ function SetTableID(id)
     Tools.tabid = id
 end
 function nLogTab(tab)
-    content=tab2str(tab)
+    content = tab2str(tab)
     -- runinfo
-    wLog("runinfo",content)
+    wLog("runinfo", content)
     nLog(content)
 end
 function tab2str(tab)
     local content = ""
     for key, value in pairs(tab) do
         if type(value) == "table" then
-            content=content.."\n"..key..":"..tab2str(value)..",\n"
+            content = content .. "\n" .. key .. ":" .. tab2str(value) .. ",\n"
         else
             content = content .. key .. ":" .. tostring(value) .. ","
         end
@@ -385,33 +385,28 @@ function showMessage(msg)
 
     showTextView(tostring(msg), "abc", 60, 679, 261, 703, "left", "eeeeee", "000000", 10, 1, 0.5, 0, 50)
 end
+function write_config(name, value)
+    local path = userPath() .. "/res/config_" .. name .. ".txt"
+    writeFileString(path, tostring(value), "w")
+end
+function read_config(name, vaule)
+    local path = userPath() .. "/res/config_" .. name .. ".txt"
+    local val = readFileString(path)
+    if val then
+        return val
+    else
+        return value
+    end
+end
+function read_number(name, vaule)
+    return tonumber(read_config(name, vaule))
+end
+function read_bool(name, vaule)
+    return read_config(name, vaule) == "true"
+end
 
--- H = {}
--- H["进副本"] = {
---     -- {"副本返回", 0.8, 14, 20, 55, 64, "0x243450",  "4|8|0xb4945f,-3|18|0x172438"},
---     -- {"副本返回",0.8,13,23,41,60,"0x13233F-0x354561","4|8|0x9F7F4B-0xC1A16D,-3|14|0x07152A-0x29374C"}
---     -- {"副本返回",0.8, 10, 25, 40, 55,"0x243450-0x111111","5|8|0xab8c58-0x111111,-5|10|0x1c2a41-0x111111"}
+-- write_config("test_val","1")
+-- nLog(read_number("test_val","2"))
 
--- --   {"副本返回",0.8,12,33,42,62,"0x13233F-0x354561","4|8|0xA3834E-0xC5A570,-3|18|0x061327-0x283549"}
--- }
--- convert_tab(H["进副本"])
--- init(1)
--- setTable(H)
--- keepScreen(false)
--- keepScreen(true)
--- if find(5, {"进副本", "副本返回"}, false) then
---     nLog("测试成功")
--- else
---     -- if beginPlayOne(area, subarea, name, level) ~= true then
---     -- end
---     nLog("测试失败")
--- end
--- keepScreen(false)
-
--- nLog(tonumber("10")==10)
--- 将飞天XM格式转换位触动精灵
--- nLog(math.min(0,5))
--- a,b=calc_ps("0x000000","0x111111")
--- a,b=calc_ps("0xffffff","0x111111")
--- nLog(a)
--- nLog(b)
+-- write_config("test_val1",false)
+-- nLog(read_bool("test_val1",false))
