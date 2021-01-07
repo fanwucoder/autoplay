@@ -240,7 +240,9 @@ function stopSSApp()
 end
 PLAY_TASK_INFO = {
     ["区域"] = {"赫顿城"},
-    ["区域1"] = {"悬空", "暮光"}
+    ["区域1"] = {"悬空", "暮光"},
+    ["zl_account"]="",
+    ["zl_password"]=""
 }
 
 function init_config()

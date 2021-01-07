@@ -1,4 +1,3 @@
-require("TSLib")
 require("common")
 -- 卡分解页面
 MAP = {["格鲁"] = {321, 164}}
@@ -122,7 +121,7 @@ function Unit.State.playGamerOne(taskInfo)
     learn_skills()
     local today = tonumber(os.date("%d", os.time()))
 
-    if has_config("赫顿城" .. AREA_MG_CONFIG) == false or today % 5 == 0 then
+    if has_config("暮光" .. AREA_MG_CONFIG) == false or today % 5 == 0 then
         check_auto_play()
     end
     if role_info["副本方式"] == "自动" then
@@ -250,6 +249,7 @@ end
 
 function doPalyOne(area, subarea, name, level, times)
     -- 点击再来一次
+    times=tonumber(times)
     showMessage("开始单刷:" .. times .. "次")
     if beginPlayOne(area, subarea, name, level) ~= true then
         return false

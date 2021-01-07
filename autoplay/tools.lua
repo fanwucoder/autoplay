@@ -400,7 +400,7 @@ function read_config(name, vaule)
 end
 function has_config(name,value)
     local path = userPath() .. "/res/config_" .. name .. ".txt"
-    local bool,kind = isFileExist(file)
+    local bool,kind = isFileExist(path)
     return bool
 end
 

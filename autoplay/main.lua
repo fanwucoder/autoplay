@@ -80,6 +80,7 @@ Unit.Param.init = {
 function Unit.State.init(initParam)
     local task = PLAY_TASK_INFO.task
     Unit.Param.beginTask.task = task
+    nLog( PLAY_TASK_INFO.zl_account)
     Unit.Param[task].zl_account = PLAY_TASK_INFO.zl_account
     Unit.Param[task].zl_password = PLAY_TASK_INFO.zl_password
     Unit.Param[task].appType = PLAY_TASK_INFO.appType
