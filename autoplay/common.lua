@@ -27,7 +27,7 @@ H["进副本"] = {
         {{190, 117, 0xedaa2a}, {190, 110, 0xfbea84}, {995, 233, 0xda9113}, {1062, 144, 0x7e7e7e}, {1092, 145, 0x7f7f7f}},
         {1091, 48}
     },
-    {"拜师", {{637, 275, 0x101a28}, {477, 388, 0x101a28}, {571, 431, 0x1152be}, {786, 433, 0x104fb7}}, {534,452}}
+    {"拜师", {{637, 275, 0x101a28}, {477, 388, 0x101a28}, {571, 431, 0x1152be}, {786, 433, 0x104fb7}}, {534, 452}}
 }
 -- H["进副本"] = {
 --     {"副本返回", {{26, 40, 0x202f49}, {29, 47, 0x5b411a}, {23, 51, 0x17253a}}, {26, 40}},
@@ -185,9 +185,10 @@ H["分解装备"] = {
     -- {"分解确认", 0.8, 793, 359, 829, 586, "0x003A9B-0x225CBD", "-2|26|0x072A65-0x294C87"},
     {"分解完成", {{885, 146, 0xe4c696}, {893, 157, 0xbf9b69}, {902, 163, 0xa17a43}, {891, 139, 0x101a28}}, {893, 154}}
 }
-H["学习技能"]={
-    {"技能图标",{{1161, 672, 0xffffff},{1232, 12, 0x13202e},{102, 10, 0x00ff00}},{}}
+H["学习技能"] = {
+    {"技能图标", {{1161, 672, 0xffffff}, {1232, 12, 0x13202e}, {102, 10, 0x00ff00}}, {}}
 }
+AREA_MG_CONFIG = "开通"
 function startApp(appType)
     local package = PACKAGES[appType]
     local ret = runApp(package, true)
@@ -237,10 +238,13 @@ function stopSSApp()
     closeApp(PACKAGES[APP_SS])
     rndSleep(3000, 5000)
 end
-PLAY_TASK_INFO = {}
+PLAY_TASK_INFO = {
+    ["区域"] = {"赫顿城"},
+    ["区域1"] = {"悬空", "暮光"}
+}
 
 function init_config()
-    message_log=true
+    message_log = true
     showMessage("初始化全局公共配置")
     init(1)
     setTable(H)
@@ -313,6 +317,11 @@ function init_config()
         if k == "zl_password" then
             PLAY_TASK_INFO["zl_password"] = v
         end
+        if k == "区域" then
+            v1 = strSplit(v, "-")
+            nLogTab(v1)
+            PLAY_TASK_INFO["区域"] = v1
+        end
     end
 
     roles = PLAY_TASK_INFO["role"]
@@ -324,7 +333,8 @@ function init_config()
             ["副本"] = PLAY_TASK_INFO["副本"],
             ["分解装备"] = PLAY_TASK_INFO["分解装备"],
             ["出售装备"] = PLAY_TASK_INFO["出售装备"],
-            ["副本方式"] = PLAY_TASK_INFO["副本方式"]
+            ["副本方式"] = PLAY_TASK_INFO["副本方式"],
+            ["区域"]= PLAY_TASK_INFO["区域"],
         }
     end
     -- table.remove(PLAY_TASK_INFO, "role")
@@ -338,3 +348,8 @@ function init_config()
     --读取文件内容，返回全部内容的 string
 end
 init_config()
+-- mSleep(2000)
+-- x={1,2,3}
+-- table.remove(x,1)
+-- nLogTab(x)
+

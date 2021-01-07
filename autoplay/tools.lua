@@ -253,7 +253,7 @@ function find(...)
     -- nLog("图色id:" .. find_id)
     for i = 1, #find_tab do
         if find_tab[i][1] == find_id then
-            nLog("取到色点数据：" .. find_id)
+            -- nLog("取到色点数据：" .. find_id)
             colors = find_tab[i]
             if type(colors[2]) == "number" then
                 return findm(colors, click, Rnd)
@@ -398,13 +398,33 @@ function read_config(name, vaule)
         return value
     end
 end
+function has_config(name,value)
+    local path = userPath() .. "/res/config_" .. name .. ".txt"
+    local bool,kind = isFileExist(file)
+    return bool
+end
+
 function read_number(name, vaule)
     return tonumber(read_config(name, vaule))
 end
 function read_bool(name, vaule)
     return read_config(name, vaule) == "true"
 end
-
+function write_table(name, value)
+    local path = userPath() .. "/res/config_" .. name .. ".txt"
+    writeFile(path, value, "w")
+end
+function read_table(name, value)
+    local path = userPath() .. "/res/config_" .. name .. ".txt"
+    local ret=readFile(path)
+    if ret==false then
+        return value
+    end
+    return ret
+end
+-- write_table("test_tab",{1,2,aa={3,4}})
+-- ret=read_table("test_tab")
+-- nLog(ret.aa)
 -- write_config("test_val","1")
 -- nLog(read_number("test_val","2"))
 

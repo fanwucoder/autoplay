@@ -3,23 +3,23 @@ require("common")
 -- 卡分解页面
 MAP = {["格鲁"] = {321, 164}}
 SUB_MAP = {
+    -- ["诺曼达"] = {762, 167},
     ["悬空"] = {963, 292},
     ["暮光"] = {308, 610}
 }
 SUB_MAP1 = {
     ["悬空"] = {
         ["矿脉"] = {243, 610},
-        {
-            ["失落"] = {766, 607},
-            ["龙族"] = {296, 486},
-            ["幽暗"] = {710, 492},
-            ["罪恶"] = {333, 366},
-            ["天空"] = {689, 367}
-        },
+        ["失落"] = {766, 607},
+        ["龙族"] = {296, 486},
+        ["幽暗"] = {710, 492},
+        ["罪恶"] = {333, 366},
+        ["天空"] = {689, 367},
         ["宫殿"] = {707, 253},
         ["冰火"] = {280, 244}
     },
-    ["暮光"] = {["灼热"] = {1104, 411}, ["幽寒"] = {535, 374}, ["黄昏"] = {775, 566}, ["恶毒"] = {491, 168}}
+    ["暮光"] = {["灼热"] = {1104, 411}, ["幽寒"] = {535, 374}, ["黄昏"] = {775, 566}, ["恶毒"] = {491, 168}},
+    ["诺曼达"] = {["瘟疫"] = {499, 199}}
 }
 Unit.Param.playGamer = {}
 
@@ -120,6 +120,14 @@ function Unit.State.playGamerOne(taskInfo)
         mSleep(2000)
     end
     learn_skills()
+    local today = tonumber(os.date("%d", os.time()))
+
+    if has_config("赫顿城" .. AREA_MG_CONFIG) == false or today % 5 == 0 then
+        check_auto_play()
+    end
+    if role_info["副本方式"] == "自动" then
+        fb = rand_map(role_info["区域"])
+    end
     if fb[6] then
         doPalyOne(fb[1], fb[2], fb[3], fb[4], fb[5])
     end
@@ -184,7 +192,7 @@ function goMap(area, subarea, name, level)
     randomTap(1190, 100)
     for i = 0, 2, 1 do
         moveTo(734, 210, 711, 673)
-        showMessage("滑动地图")
+        -- showMessage("滑动地图")
         rndSleep(100)
     end
     -- 其他地图
@@ -192,7 +200,7 @@ function goMap(area, subarea, name, level)
     local xy = SUB_MAP[subarea]
 
     for i = 1, 3 do
-        showMessage("x:" .. xy[1] .. ",y:" .. xy[2])
+        -- showMessage("x:" .. xy[1] .. ",y:" .. xy[2])
         randomTap(xy[1], xy[2])
     end
 
@@ -200,8 +208,8 @@ function goMap(area, subarea, name, level)
         return false
     end
     xy = SUB_MAP1[subarea][name]
-    showMessage(xy[1])
-    showMessage(xy[2])
+    -- showMessage(xy[1])
+    -- showMessage(xy[2])
     randomTap(xy[1], xy[2])
     if waitColor("开始挑战", false, 15, 3) ~= true then
         return false
@@ -412,11 +420,11 @@ function closeSR(wait)
         wait = 1000
     end
 
-    has_sr = false
+    local has_sr = false
     showMessage("关闭神秘商人")
     keepScreen(false)
     keepScreen(true)
-    x, y =
+    local x, y =
         findMultiColorInRegionFuzzy(0xb59c73, "-4|26|0x685526,-4|17|0x08101f", 80, 1096, 636, 1096, 636, {orient = 2})
     if x ~= -1 then
         has_sr = true
@@ -758,7 +766,7 @@ function clear_package(fj, cs)
                 showMessage("没装备了")
             end
         end
-        
+
         if get_email() ~= true then
             showMessage("没邮件了")
             break
@@ -877,6 +885,84 @@ function use_zb_all(not_open)
     randomTap(57, 24)
     mSleep(5000)
 end
+function check_play(i)
+    step = 164 * i
+    x, y = findMultiColorInRegionFuzzy(0xffdd77, "", 90, 602 + step, 134, 658 + step, 153, {orient = 2})
+    if x ~= -1 then
+        return true
+    end
+    return false
+end
+function back_city()
+    SetTableID("进副本")
+    cnt = 0
+    while cnt < 10 do
+        if waitColor("副本返回", true, 3, 1) ~= true then
+            showMessage("退出")
+        end
+        if waitColor("副本返回", true, 3, 1) ~= true then
+            showMessage("退出")
+        end
+
+        if multiColor({{1221, 35, 0xe9cc9b}, {1233, 49, 0xbc9865}, {1244, 37, 0xc9ac7d}, {1222, 58, 0xaf8852}}) then
+            randomTap(1234, 46)
+            mSleep(1000)
+        end
+        if wait_bak(3) == true then
+            break
+        end
+    end
+end
+
+function check_auto_play()
+    for name, p in pairs(SUB_MAP) do
+        -- nLog(""..name)
+        for name1, p1 in pairs(SUB_MAP1[name]) do
+            nLog(name1)
+            if goMap("赫顿城", name, name1, "普通") then
+                write_config(name .. AREA_MG_CONFIG, true)
+                write_config(name .. name1 .. AREA_MG_CONFIG, true)
+                nLog(name .. "开通")
+                local level = {[0] = "普通", [1] = "冒险", [2] = "勇士", [3] = "王者"}
+                for idx, name2 in pairs(level) do
+                    if check_play(idx) then
+                        write_config(name .. name1 .. name2 .. AREA_MG_CONFIG, true)
+                        nLog(name .. name1 .. name2 .. "开通")
+                    end
+                end
+            else
+                nLog(name .. name1 .. "未开通")
+                write_config(name .. name1 .. AREA_MG_CONFIG, true)
+            end
+
+            back_city()
+        end
+    end
+end
+function has_open(area, subarea, name, level)
+    if subarea == "暮光" and level == "普通" and (name == "灼热" or name == "幽寒" or name == "黄昏" or name == "恶毒") then
+        return true
+    end
+    return read_bool(subarea .. name .. level .. AREA_MG_CONFIG, false)
+end
+function rand_map(all)
+    while true do
+        local x = getRnd(1, #all)
+        s = all[x]
+        local x1 = strSplit(s, ",")
+        if has_open(x1[1], x1[2], x1[3], x1[4]) then
+            return x1
+        end
+        table.remove(all, x)
+    end
+end
+
+-- mSleep(2000)
+-- nLogTab(rand_map(PLAY_TASK_INFO["区域"]))
+-- mSleep(3000)
+-- nLog(has_open("赫顿城","悬空","天空","王者"))
+-- back_city()
+-- check_auto_play()
 -- use_zb_all()
 -- use_zb(1121,562)
 -- set_base_picture()
