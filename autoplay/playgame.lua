@@ -808,15 +808,16 @@ function learn_skills()
     if (isColor(1185, 648, 0xff0000, 90)) ~= true then
         return
     end
-    -- 直接弹出学习技能页面卡住了
-    if multiColor({{638, 247, 0x101a28}, {598, 458, 0x124599}, {818, 468, 0x163e85}}) then
-        randomTap(578, 461)
-        mSleep(1500)
-    end
+
     posistion = {{1162, 668}, {1161, 673}, {948, 674}, {752, 462}, {54, 34}}
     for i = 1, #posistion do
         xy = posistion[i]
         randomTap(xy[1], xy[2])
+        mSleep(1500)
+    end
+    -- 直接弹出学习技能页面卡住了
+    if multiColor({{638, 247, 0x101a28}, {598, 458, 0x124599}, {818, 468, 0x163e85}}) then
+        randomTap(578, 461)
         mSleep(1500)
     end
 end
@@ -951,7 +952,7 @@ function check_auto_play()
                 write_config(name .. name1 .. AREA_MG_CONFIG, false)
             end
             showMessage(name .. name1 .. "开通情况")
-            write_status(name .. name1 .. "开通情况")
+            write_status(name .. name1 .. "开通情况\n")
             back_city()
         end
     end
