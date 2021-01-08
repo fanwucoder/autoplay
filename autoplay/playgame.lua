@@ -80,7 +80,7 @@ Unit.Param.playFinish = {}
 -- 等待登录进入游戏
 function Unit.State.playFinish(taskInfo)
     -- 挂机完毕
-    writeFileString("/sdcard/touch_status.txt", "finish\n", "a")
+    write_status("finish\n")
     return "quit"
 end
 
@@ -318,6 +318,8 @@ function doPalyOne(area, subarea, name, level, times)
                 return false
             end
         end
+        showMessage("刷副本" .. cnt)
+        write_status("刷副本" .. cnt .. "\n")
         mSleep(200)
     end
 end
@@ -563,7 +565,8 @@ function wait_ss(xm, timeout)
         if timeout ~= nil and cnt > timeout then
             return false
         end
-
+        showMessage("登录排队中" .. cnt)
+        write_status("登录排队中" .. cnt .. "\n")
         -- nLog("??")
     end
     -- mSleep(5000)
@@ -630,7 +633,8 @@ function closeGG()
 end
 -- closeGG()
 function get_email()
-    showMessage("领邮件")
+    showMessage("清邮件")
+    write_status("清邮件\n")
     SetTableID("上士登录页")
     has_email = false
     for i = 1, 100 do
@@ -684,6 +688,8 @@ function get_email()
     return has_email
 end
 function fenjiezb(type, a, b, c)
+    showMessage("分解装备")
+    write_status("分解装备\n")
     if a == nil then
         a = true
     end
@@ -749,6 +755,8 @@ function fenjiezb(type, a, b, c)
 end
 function clear_package(fj, cs)
     -- 清理邮件和分解装备
+    showMessage("清背包")
+    write_status("清背包\n")
     for i = 1, 10 do
         if fj[1] ~= true and cs[1] ~= true then
             break
@@ -792,7 +800,8 @@ function learn_skills()
     if today % 2 ~= 0 then
         return
     end
-
+    showMessage("清技能点")
+    write_status("清技能点\n")
     mSleep(1000)
     -- writeFileString(file,str,mode,wrap)
 
@@ -801,7 +810,7 @@ function learn_skills()
     end
     -- 直接弹出学习技能页面卡住了
     if multiColor({{638, 247, 0x101a28}, {598, 458, 0x124599}, {818, 468, 0x163e85}}) then
-        randomTap(578,461)
+        randomTap(578, 461)
         mSleep(1500)
     end
     posistion = {{1162, 668}, {1161, 673}, {948, 674}, {752, 462}, {54, 34}}
@@ -861,6 +870,8 @@ function use_zb(x, y)
 end
 
 function use_zb_all(not_open)
+    showMessage("穿推荐的装备")
+    write_status("穿推荐的装备\n")
     if not_open ~= true then
         randomTap(1222, 672)
         mSleep(2000)
@@ -923,23 +934,22 @@ function check_auto_play()
     for name, p in pairs(SUB_MAP) do
         -- nLog(""..name)
         for name1, p1 in pairs(SUB_MAP1[name]) do
-            nLog(name1)
             if goMap("赫顿城", name, name1, "普通") then
                 write_config(name .. AREA_MG_CONFIG, true)
                 write_config(name .. name1 .. AREA_MG_CONFIG, true)
-                nLog(name .. "开通")
+
                 local level = {[0] = "普通", [1] = "冒险", [2] = "勇士", [3] = "王者"}
                 for idx, name2 in pairs(level) do
                     if check_play(idx) then
                         write_config(name .. name1 .. name2 .. AREA_MG_CONFIG, true)
-                        nLog(name .. name1 .. name2 .. "开通")
+                        showMessage(name .. name1 .. name2 .. "开通")
                     end
                 end
             else
-                nLog(name .. name1 .. "未开通")
-                write_config(name .. name1 .. AREA_MG_CONFIG, true)
+                write_config(name .. name1 .. AREA_MG_CONFIG, false)
             end
-
+            showMessage(name .. name1 .. "开通情况")
+            write_status(name .. name1 .. "开通情况")
             back_city()
         end
     end

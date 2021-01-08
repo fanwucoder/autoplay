@@ -398,9 +398,9 @@ function read_config(name, vaule)
         return value
     end
 end
-function has_config(name,value)
+function has_config(name, value)
     local path = userPath() .. "/res/config_" .. name .. ".txt"
-    local bool,kind = isFileExist(path)
+    local bool, kind = isFileExist(path)
     return bool
 end
 
@@ -416,12 +416,20 @@ function write_table(name, value)
 end
 function read_table(name, value)
     local path = userPath() .. "/res/config_" .. name .. ".txt"
-    local ret=readFile(path)
-    if ret==false then
+    local ret = readFile(path)
+    if ret == false then
         return value
     end
     return ret
 end
+function write_status(status,mode)
+    if mode==nil then
+        mode="a"
+    end
+    
+    writeFileString("/sdcard/touch_status.txt", status,mode)
+end
+
 -- write_table("test_tab",{1,2,aa={3,4}})
 -- ret=read_table("test_tab")
 -- nLog(ret.aa)
