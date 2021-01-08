@@ -915,9 +915,11 @@ function back_city()
     while cnt < 10 do
         if waitColor("副本返回", true, 3, 1) ~= true then
             showMessage("退出")
+            mSleep(1000)
         end
         if waitColor("副本返回", true, 3, 1) ~= true then
             showMessage("退出")
+            mSleep(1000)
         end
 
         if multiColor({{1221, 35, 0xe9cc9b}, {1233, 49, 0xbc9865}, {1244, 37, 0xc9ac7d}, {1222, 58, 0xaf8852}}) then
