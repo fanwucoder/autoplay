@@ -249,7 +249,7 @@ end
 
 function doPalyOne(area, subarea, name, level, times)
     -- 点击再来一次
-    times=tonumber(times)
+    times = tonumber(times)
     showMessage("开始单刷:" .. times .. "次")
     if beginPlayOne(area, subarea, name, level) ~= true then
         return false
@@ -798,6 +798,11 @@ function learn_skills()
 
     if (isColor(1185, 648, 0xff0000, 90)) ~= true then
         return
+    end
+    -- 直接弹出学习技能页面卡住了
+    if multiColor({{638, 247, 0x101a28}, {598, 458, 0x124599}, {818, 468, 0x163e85}}) then
+        randomTap(578,461)
+        mSleep(1500)
     end
     posistion = {{1162, 668}, {1161, 673}, {948, 674}, {752, 462}, {54, 34}}
     for i = 1, #posistion do
