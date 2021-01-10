@@ -1,0 +1,16 @@
+"D:\Program Files\Microvirt\MEmu\memuc.exe" -i 6 adb pull /sdcard/xhp0_0.png xhp0_0.png
+"D:\Program Files\Microvirt\MEmu\memuc.exe" -i 6 adb pull /sdcard/xhp0_1.png xhp0_1.png
+"D:\Program Files\Microvirt\MEmu\memuc.exe" -i 6 adb pull /sdcard/xhp0_2.png xhp0_2.png
+"D:\Program Files\Microvirt\MEmu\memuc.exe" -i 6 adb pull /sdcard/xhp0_3.png xhp0_3.png
+"D:\Program Files\Microvirt\MEmu\memuc.exe" -i 6 adb pull /sdcard/xhp0_4.png xhp0_4.png
+"D:\Program Files\Microvirt\MEmu\memuc.exe" -i 6 adb pull /sdcard/xhp1_0.png xhp1_0.png
+"D:\Program Files\Microvirt\MEmu\memuc.exe" -i 6 adb pull /sdcard/xhp1_1.png xhp1_1.png
+"D:\Program Files\Microvirt\MEmu\memuc.exe" -i 6 adb pull /sdcard/xhp1_2.png xhp1_2.png
+"D:\Program Files\Microvirt\MEmu\memuc.exe" -i 6 adb pull /sdcard/xhp1_3.png xhp1_3.png
+"D:\Program Files\Microvirt\MEmu\memuc.exe" -i 6 adb pull /sdcard/xhp1_4.png xhp1_4.png
+"D:\Program Files\Microvirt\MEmu\memuc.exe" -i 6 adb pull /sdcard/xhp2_0.png xhp2_0.png
+"D:\Program Files\Microvirt\MEmu\memuc.exe" -i 6 adb pull /sdcard/xhp2_1.png xhp2_1.png
+"D:\Program Files\Microvirt\MEmu\memuc.exe" -i 6 adb pull /sdcard/xhp2_2.png xhp2_2.png
+"D:\Program Files\Microvirt\MEmu\memuc.exe" -i 6 adb pull /sdcard/xhp2_3.png xhp2_3.png
+"D:\Program Files\Microvirt\MEmu\memuc.exe" -i 6 adb pull /sdcard/xhp2_4.png xhp2_4.png
+"D:\Program Files\Microvirt\MEmu\memuc.exe" -i 6 adb pull /sdcard/xhp3_0.png xhp3_0.png

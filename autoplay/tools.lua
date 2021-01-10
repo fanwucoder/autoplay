@@ -429,6 +429,28 @@ function write_status(status,mode)
     
     writeFileString("/sdcard/touch_status.txt", status,mode)
 end
+function make_xhp(idx)
+    -- 生成背包中所有消耗品的图片
+    tapxy(1222, 672)
+    tapxy(1190, 98)
+    xstep = 95
+    ystep = 96
+    startx, starty = 797, 135
+    nLog(1057 - 988)
+    nLog(392 - 326)
+    mSleep(200)
+    for i = 0, 24 do
+        local row, other = math.modf(i / 5)
+        local col = i % 5
+        local x = startx + col * xstep
+        local y = starty + row * ystep
+        snapshot("/sdcard/xhp" .. row .. "_" .. col .. ".png", x, y, x + 50, y + 50)
+        nLog(
+            '"D:\\Program Files\\Microvirt\\MEmu\\memuc.exe" -i ' ..
+                idx .. " adb pull /sdcard/xhp" .. row .. "_" .. col .. ".png " .. " xhp" .. row .. "_" .. col .. ".png "
+        )
+    end
+end
 
 -- write_table("test_tab",{1,2,aa={3,4}})
 -- ret=read_table("test_tab")

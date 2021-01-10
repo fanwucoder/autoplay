@@ -119,21 +119,31 @@ function Unit.State.playGamerOne(taskInfo)
         mSleep(2000)
     end
     learn_skills()
-    local today = tonumber(os.date("%d", os.time()))
+    -- check_auto_play()
 
-    if has_config("暮光" .. AREA_MG_CONFIG) == false or today % 5 == 0 then
-        check_auto_play()
-    end
     if role_info["副本方式"] == "自动" then
-        fb = rand_map(role_info["区域"])
+        fb = rand_map(role_info["区域"], false)
     end
     if fb[6] then
         doPalyOne(fb[1], fb[2], fb[3], fb[4], fb[5])
     end
     wait_bak()
     mSleep(1000)
-    snapshot("/sdcard/finish_game_" .. taskInfo.cur .. ".png", 0, 0, 1270, 700)
     clear_package(fj, cs)
+    loin_sign()
+    get_online(false)
+    get_online(true)
+    clear_xhp()
+    do_dn()
+    do_dn()
+    do_gbl()
+    do_buygh(2)
+    qhzb()
+    get_rc()
+    lqcj()
+    lqgkjl()
+
+    snapshot("/sdcard/finish_game_" .. taskInfo.cur .. ".png", 0, 0, 1270, 700)
     mSleep(1000)
 
     mSleep(2000)
@@ -356,16 +366,24 @@ function checkautoplay()
         --     showMessage("已经自动挂机了")
         --     return true
         -- end
-        if multiColor({{34, 268, 0xffd278}, {48, 268, 0xffffbb}, {40, 286, 0xffff67}, {27, 277, 0xffbb2a}}, 90, false) then
-            showMessage("已经自动挂机了")
-            return true
+        for i = 1, 20 do
+            if
+                multiColor(
+                    {{34, 268, 0xffd278}, {48, 268, 0xffffbb}, {40, 286, 0xffff67}, {27, 277, 0xffbb2a}},
+                    90,
+                    false
+                )
+             then
+                showMessage("已经自动挂机了")
+                return true
+            end
         end
 
+        randomTap(42, 273)
         -- showMessage("检查次数" .. cnt)
         cnt = cnt + 1
         mSleep(200)
     end
-    randomTap(42, 273)
 
     return false
 end
@@ -761,6 +779,7 @@ function clear_package(fj, cs)
         if fj[1] ~= true and cs[1] ~= true then
             break
         end
+
         use_zb_all()
         if fj[1] then
             showMessage("分解装备")
@@ -849,11 +868,11 @@ function is_sugg(x, y)
     return isColor(x, y, 0x6ac100)
 end
 function use_zb(x, y)
-    x = x + 20
-    y = y + 20
+    x = x + 50
+    y = y + 50
     randomTap(x, y)
     rndSleep(1000)
-
+    showMessage("点击了" .. x .. ":" .. y)
     if multiColor({{475, 375, 0x161b2c}, {580, 76, 0x154393}}) then
         randomTap(572, 71)
         rndSleep(1000)
@@ -868,10 +887,11 @@ function use_zb(x, y)
         randomTap(751, 452)
         rndSleep(1000)
     end
-    rndSleep(2000)
+    rndSleep(10000)
 end
 
 function use_zb_all(not_open)
+    mSleep(5000)
     showMessage("穿推荐的装备")
     write_status("穿推荐的装备\n")
     if not_open ~= true then
@@ -939,6 +959,10 @@ function back_city()
 end
 
 function check_auto_play()
+    local today = tonumber(os.date("%d", os.time()))
+    if not (has_config("暮光" .. AREA_MG_CONFIG) == false or today % 5 == 0) then
+        return
+    end
     for name, p in pairs(SUB_MAP) do
         -- nLog(""..name)
         for name1, p1 in pairs(SUB_MAP1[name]) do
@@ -968,25 +992,433 @@ function has_open(area, subarea, name, level)
     end
     return read_bool(subarea .. name .. level .. AREA_MG_CONFIG, false)
 end
-function rand_map(all)
+function rand_map(all, max)
     while true do
         local x = getRnd(1, #all)
         s = all[x]
         local x1 = strSplit(s, ",")
-        if has_open(x1[1], x1[2], x1[3], x1[4]) then
-            return x1
+
+        if max == true or x1[1] == "暮光" then
+            local level = {[0] = "普通", [1] = "冒险", [2] = "勇士", [3] = "王者"}
+            for i = 3, 0, -1 do
+                if has_open(x1[1], x1[2], x1[3], level[i]) then
+                    x1[4] = level[i]
+                    return x1
+                end
+            end
+        else
+            if has_open(x1[1], x1[2], x1[3], x1[4]) then
+                return x1
+            end
         end
+
         table.remove(all, x)
     end
 end
--- set_base_picture()
--- mSleep(2000)
--- nLogTab(rand_map(PLAY_TASK_INFO["区域"]))
--- mSleep(3000)
--- nLog(has_open("赫顿城","悬空","天空","王者"))
--- back_city()
--- check_auto_play()
--- use_zb_all()
--- use_zb(1121,562)
--- set_base_picture()
--- learn_skills()
+function tapxy(x, y)
+    randomTap(x, y)
+    mSleep(2000)
+end
+function loin_sign()
+    -- 领每日签到,随机决定是否签到
+    if getRnd(1, 30) < 5 then
+        return
+    end
+    local today = tonumber(os.date("%d", os.time()))
+    -- local today=22
+    randomTap(1025, 32)
+    mSleep(2000)
+    x1 = 412
+    y1 = 271
+    xstep = 109
+    ystep = 109
+
+    if today > 21 then
+        x1 = 417
+        y1 = 299
+        today = today - 21
+        nLog("滑动")
+        mSleep(1000)
+        moveTo(746, 513, 757, 306, 10, 800)
+        mSleep(1000)
+    end
+    local row, _ = math.modf((today - 1) / 7)
+    local col = (today - 1) % 7
+    x1 = x1 + xstep * col
+    y1 = y1 + ystep * row
+    tapxy(x1, y1)
+    tapxy(1224, 96)
+    lj = {{837, 605, 0xf6f09f}, {923, 605, 0xa7b9a9}, {1000, 604, 0x3a5cbe}, {1084, 608, 0xfea65c}}
+    for i = 1, 4 do
+        local xy = lj[i]
+        tapxy(xy[1], xy[2])
+        tapxy(1224, 96)
+    end
+    tapxy(1118, 132)
+    rndSleep(2000)
+end
+function get_online(level)
+    -- 领在线和等级礼包
+    randomTap(1025, 32)
+    mSleep(2000)
+    local cntout = 20
+    if level == true then
+        moveTo(233, 615, 243, 403, 10, getRnd(800, 1000))
+        mSleep(2000)
+        randomTap(239, 617)
+    else
+        randomTap(238, 601)
+    end
+
+    mSleep(2000)
+    while cntout > 0 do
+        if (isColor(987, 199, 0xe09c1e, 90)) then
+            randomTap(987, 199)
+            mSleep(1000)
+        end
+        cntout = cntout - 1
+    end
+    tapxy(1118, 132)
+    rndSleep(2000)
+end
+
+-- clear_xhp(7)
+function clear_xhp()
+    -- 清理等级奖励的消耗品
+    tapxy(1222, 672)
+    tapxy(1190, 98)
+    xstep = 95
+    ystep = 95
+    startx, starty = 797, 135
+    mSleep(2000)
+    just_use = {"xhp_翅膀.png", "xhp_套装.png", "xhp_衣服.png", "xhp_鞋子.png"}
+    local cnt = 0
+    keepScreen(true)
+    while cnt <= 24 do
+        local row, other = math.modf(cnt / 5)
+        local col = cnt % 5
+        local x = startx + col * xstep
+        local y = starty + row * ystep
+        nLog("找第" .. cnt .. "个")
+        nLogArr({cnt, x, y, x + 50, y + 50, 10000})
+        -- mSleep(50)
+        for i = 1, #just_use do
+            local x1, y1 = findImageInRegionFuzzy(just_use[i], 90, x - 5, y - 5, x + 55, y + 55, 0, 2)
+            -- local x1, y1 = findImage(just_use[i], x-5, y-5, x + 55, y + 55, 20000)
+            if x1 ~= -1 then
+                showMessage("找到" .. just_use[i])
+                tapxy(x1 + 50, y1 + 50)
+                tapxy(615, 75)
+                tapxy(1109, 84)
+                tapxy(298, 98)
+                cnt = cnt - 1
+                keepScreen(false)
+                mSleep(1000)
+                keepScreen(true)
+                break
+            end
+        end
+
+        cnt = cnt + 1
+    end
+    keepScreen(false)
+    nLog("why")
+
+    tapxy(57, 24)
+
+    rndSleep(2000)
+end
+-- clear_xhp()
+function do_dn()
+    -- 刷斗牛
+    tap_range = {{1228, 422, 0xb37240}, {109, 210, 0x2c7cca}, {619, 273, 0x205fae}, {969, 609, 0xf7cd35}}
+    for i = 1, #tap_range do
+        xy = tap_range[i]
+        if i == 3 then
+            if isColor(xy[1], xy[2], xy[3]) then
+                tapxy(xy[1], xy[2])
+            else
+                back_city()
+                return
+            end
+        else
+            tapxy(xy[1], xy[2])
+        end
+    end
+    mSleep(10000)
+    if checkautoplay() ~= true then
+        nLog("没有自动开图")
+        tapxy(1066, 28)
+        tapxy(458, 581)
+
+        if (isColor(792, 455, 0x13418d, 90)) then
+            tapxy(792, 455)
+        end
+        back_city()
+        return
+    end
+    cntout = 200
+    while cntout > 0 do
+        if multiColor({{578, 126, 0xfbfbfc}, {618, 136, 0xffffff}, {670, 146, 0xffffff}, {483, 466, 0x607175}}) then
+            tapxy(578, 126)
+            break
+        end
+        cntout = cntout - 1
+        mSleep(10000)
+    end
+    back_city()
+end
+function do_gbl()
+    -- 刷哥布林
+    local tap_range = {{1229, 424, 0x995e3c}, {114, 210, 0x424547}, {655, 508, 0x2b78c4}}
+    for i = 1, #tap_range do
+        xy = tap_range[i]
+        if i == 3 then
+            if isColor(xy[1], xy[2], xy[3]) then
+                tapxy(xy[1], xy[2])
+            else
+                back_city()
+                return
+            end
+        else
+            tapxy(xy[1], xy[2])
+        end
+    end
+    local tap_range = {{252, 428, 0x20293c}, {247, 335, 0x20293c}, {253, 243, 0x20293c}, {256, 145, 0x20293c}}
+    for i = 1, #tap_range do
+        xy = tap_range[i]
+        tapxy(xy[1], xy[2])
+
+        if (isColor(1069, 605, 0xe0ab28, 90)) then
+            tapxy(1069, 605)
+            break
+        end
+    end
+    if checkautoplay() ~= true then
+        nLog("没有自动开图")
+        tapxy(1066, 28)
+        tapxy(458, 581)
+
+        if (isColor(792, 455, 0x13418d, 90)) then
+            tapxy(792, 455)
+        end
+        back_city()
+        return
+    end
+    cntout = 200
+    while cntout > 0 do
+        if multiColor({{578, 126, 0xfbfbfc}, {618, 136, 0xffffff}, {670, 146, 0xffffff}, {483, 466, 0x607175}}) then
+            tapxy(578, 126)
+            break
+        end
+        cntout = cntout - 1
+        mSleep(10000)
+    end
+    back_city()
+end
+H["工会购买"] = {
+    {"没有工会", {{1016, 416, 0x114eb4}, {1018, 640, 0x104eb5}}, {1016, 426}},
+    {"公会主页", {{1200, 681, 0xce8213}, {158, 128, 0x216abc}, {1132, 542, 0x0b1625}}, {0, 0}}
+}
+function do_buygh(sp)
+    SetTableID("工会购买")
+    tapxy(1023, 669)
+    mSleep(1000)
+    if waitColor("公会主页", false) == false then
+        if waitColor("没有工会", true) then
+        end
+        back_city()
+        return
+    end
+    if sp == nil then
+        sp = 0
+    end
+    tapArray({{109, 307, 0x256aac}, {768, 375, 0x154393}})
+    dx = 353
+    dy = 215
+    x, y = 497, 330
+    x, y = get_table_pos(sp, 3, 497, 330, 353, 215)
+    tapArray({{x, y, 0xbc7a1a}})
+    local weekday = tonumber(os.date("%w", os.time()))
+    -- nLog("星期"..weekday)
+    if weekday == 0 then
+        tapArray({{863, 545, 0x154190}})
+    end
+    tapArray({{649, 652, 0x393d43}, {618, 30, 0x23314e}})
+
+    back_city()
+end
+function get_table_pos(i, w, startx, starty, dx, dy)
+    -- 从0开始的排列的表格坐标
+    local row, _ = math.modf(i / w)
+    local col = i % w
+    local x = startx + col * dx
+    local y = starty + row * dy
+    return x, y
+end
+
+function tapArray(arr)
+    for i = 1, #arr do
+        xy = arr[i]
+        tapxy(xy[1], xy[2])
+    end
+end
+function qhzb()
+    -- 强化装备
+    tapArray({{1234, 547, 0xa88252}, {1064, 583, 0x5d3b1e}})
+    moveTo(1082, 583, 1084, 205, 30, 1000)
+    mSleep(1000)
+    for i = 1, 3 do
+        moveTo(1082, 683, 1084, 30, 30)
+    end
+
+    tapArray({{1068, 660, 0x030405}, {780, 648, 0x02060c}})
+    mSleep(5000)
+    tapArray({{149, 577, 0x020305}})
+    back_city()
+end
+
+--
+function get_rc()
+    -- 日常活跃
+    tapArray({{1227, 431, 0xbfc2c2}, {112, 132, 0x1c5083}})
+    for i = 1, 15 do
+        if (isColor(1198, 376, 0xd78e16, 90)) then
+            tapArray({{1157, 376, 0xe7af26}, {468, 161, 0x112033}})
+        end
+    end
+    tapArray(
+        {
+            {607, 166, 0x48371c},
+            {641, 483, 0xeab22b},
+            {468, 161, 0x112033},
+            {754, 165, 0x221509},
+            {641, 484, 0xe7af26},
+            {468, 161, 0x112033},
+            {898, 162, 0x332413},
+            {650, 483, 0xa89c80},
+            {468, 161, 0x112033},
+            {1046, 172, 0x564a22},
+            {640, 485, 0xe6ad25},
+            {468, 161, 0x112033},
+            {1193, 168, 0x1f090d},
+            {637, 483, 0xeab22b},
+            {468, 161, 0x112033}
+        }
+    )
+    back_city()
+end
+function lqcj()
+    -- 领取成就
+    local today = tonumber(os.date("%d", os.time()))
+    if today % 10 ~= 0 then
+        return
+    end
+
+    tapArray({{1229, 541, 0x8c6441}, {1134, 516, 0x69427b}})
+    for i = 1, 20 do
+        if (isColor(1191, 387, 0xde971b, 90)) then
+            tapArray({{1152, 388, 0xdaa525}})
+        end
+        if (isColor(1185, 278, 0xdf9d1d, 90)) then
+            tapArray({{1150, 282, 0x564931}, {468, 161, 0x112033}})
+        end
+    end
+
+    back_city()
+end
+function lqgkjl()
+    -- 领取管卡奖励
+    local today = tonumber(os.date("%d", os.time()))
+    if today % 10 ~= 0 then
+        return
+    end
+    -- goMap("赫顿城", "暮光", "恶毒", "普通")
+    -- tapArray({{53, 132, 0xba864b}})
+    zj_arr = {
+        {268, 178, 0x727c59},
+        {264, 292, 0x4d2515},
+        {272, 389, 0x548b7b},
+        {273, 385, 0x3c4846},
+        {274, 487, 0x2293cf},
+        {267, 589, 0x727494},
+        {272, 617, 0x684a40},
+        {268, 519, 0x4a5152},
+        {271, 410, 0x181418},
+        {261, 297, 0xaa6a57}
+    }
+
+    subarray = {
+        {{1124, 173, 0xe11e17}, {550, 16, 0x0c111b}},
+        {
+            {691, 170, 0xf8c69a},
+            {550, 16, 0x0c111b},
+            {906, 173, 0xa6afb6},
+            {550, 16, 0x0c111b},
+            {1121, 176, 0x442c2e},
+            {550, 16, 0x0c111b}
+        },
+        {
+            {688, 171, 0xefb890},
+            {550, 16, 0x0c111b},
+            {905, 176, 0x6199e8},
+            {550, 16, 0x0c111b},
+            {1124, 175, 0xffca09},
+            {550, 16, 0x0c111b}
+        }
+    }
+    for i = 1, 3 do
+        moveTo(278, 311, 261, 612, 30, 60)
+    end
+    mSleep(1000)
+    for i = 1, 10 do
+        pos = zj_arr[i]
+        tapArray({pos})
+
+        -- nLog("what")
+        for j = 1, 20 do
+            -- nLog(j)
+            if (isColor(1088, 367, 0xe7a520, 90)) then
+                tapArray({{1058, 370, 0xeec14e}})
+            end
+        end
+        local p2 = subarray[i]
+        if p2 ~= nil then
+            tapArray(p2)
+        end
+        if i == 5 then
+            for k = 1, 3 do
+                -- nLog(k)
+                moveTo(261, 612, 278, 311, 30, 60)
+            end
+        end
+    end
+    tapArray({{1135, 104, 0xbb9764}})
+    back_city()
+end
+
+
+--lqcj()
+-- get_rc()
+-- qhzb()
+-- do_buygh(2)
+-- make_xhp(6)
+-- clear_xhp()
+-- clear_xhp(y)
+-- x, y = 797+95*2, 135
+-- local x1, y1 = findImage("xhp_衣服.png",987,135,1037,185,10000)
+-- if x1~=nil then
+-- nLog("oo")
+-- end
+
+-- if x1 ~= nil then
+--     showMessage("找到衣服")
+--     -- tapxy(x1 + 50, y1 + 50)
+--     -- tapxy(1109, 84)
+--     -- cnt = cnt + 1
+--     -- break
+-- end
+
+-- use_zb_all(false)
+--
+--   moveTo(746, 513,757, 306,10,800)
