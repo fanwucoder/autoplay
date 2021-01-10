@@ -197,7 +197,7 @@ function goMap(area, subarea, name, level)
     -- 其他地图
     SetTableID("进副本")
     local xy = SUB_MAP[subarea]
-
+    mSleep(1000)
     for i = 1, 3 do
         -- showMessage("x:" .. xy[1] .. ",y:" .. xy[2])
         randomTap(xy[1], xy[2])
@@ -787,8 +787,9 @@ function set_base_picture()
     randomTap(241, 257)
     mSleep(2000)
     moveTo(628, 171, 628, 140)
-
-    tap(653, 395)
+    -- 画质调到最低，反正后台跑，节约性能
+    tap(920, 403)
+    -- tap(653, 395)
     mSleep(500)
     tap(541, 535)
     mSleep(500)
@@ -923,6 +924,10 @@ function back_city()
             mSleep(1000)
         end
 
+        if waitColor("关闭设置", true, 3, 1) == true then
+            showMessage("点到了头像，退出")
+            mSleep(1000)
+        end
         if multiColor({{1221, 35, 0xe9cc9b}, {1233, 49, 0xbc9865}, {1244, 37, 0xc9ac7d}, {1222, 58, 0xaf8852}}) then
             randomTap(1234, 46)
             mSleep(1000)
@@ -974,7 +979,7 @@ function rand_map(all)
         table.remove(all, x)
     end
 end
-
+-- set_base_picture()
 -- mSleep(2000)
 -- nLogTab(rand_map(PLAY_TASK_INFO["区域"]))
 -- mSleep(3000)
