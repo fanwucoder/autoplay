@@ -837,9 +837,9 @@ function learn_skills()
     end
     -- 直接弹出学习技能页面卡住了
     if multiColor({{638, 247, 0x101a28}, {598, 458, 0x124599}, {818, 468, 0x163e85}}) then
-        randomTap(578, 461)
-        mSleep(1500)
+        tapArray({{756, 462, 0x144391}})
     end
+    back_city()
 end
 function get_zb_type(x, y)
     x = x + 5
