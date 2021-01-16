@@ -994,6 +994,19 @@ function has_open(area, subarea, name, level)
     return read_bool(subarea .. name .. level .. AREA_MG_CONFIG, false)
 end
 function rand_map(all, max)
+    if has_open("赫顿城", "悬空", "失落", "普通") then
+        local i = 1
+        while i < #all do
+            local start, _ = string.find(all[i], "暮光")
+            if start ~= nil then
+                nLog("移除" .. all[i])
+                table.remove(all,i)
+            else
+                i = i + 1
+            end
+        end
+    end
+
     while true do
         local x = getRnd(1, #all)
         s = all[x]
