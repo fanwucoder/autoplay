@@ -314,7 +314,7 @@ function doPalyOne(area, subarea, name, level, times)
             showMessage("关闭拜师")
         end
 
-        if find("变强卡屏", 5, true) then
+        if find({"进副本", "变强卡屏"}, 5, true) then
             showMessage("变强卡屏")
             return false
         end
@@ -1000,7 +1000,7 @@ function rand_map(all, max)
             local start, _ = string.find(all[i], "暮光")
             if start ~= nil then
                 nLog("移除" .. all[i])
-                table.remove(all,i)
+                table.remove(all, i)
             else
                 i = i + 1
             end
@@ -1416,6 +1416,10 @@ function lqgkjl()
     end
     tapArray({{1135, 104, 0xbb9764}})
     back_city()
+end
+if find({"进副本", "变强卡屏"}, 5, true) then
+    showMessage("变强卡屏")
+    return false
 end
 -- qhzb()
 --lqcj()
