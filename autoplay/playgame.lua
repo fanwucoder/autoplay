@@ -1292,7 +1292,7 @@ function qhzb()
     for i = 1, 3 do
         moveTo(1082, 683, 1084, 30, 30)
     end
-
+    mSleep(2000)
     tapArray({{1068, 660, 0x030405}, {780, 648, 0x02060c}})
     mSleep(5000)
     tapArray({{149, 577, 0x020305}})
@@ -1417,7 +1417,7 @@ function lqgkjl()
     tapArray({{1135, 104, 0xbb9764}})
     back_city()
 end
-
+-- qhzb()
 --lqcj()
 -- get_rc()
 -- qhzb()
