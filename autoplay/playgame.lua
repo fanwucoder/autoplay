@@ -1158,15 +1158,19 @@ function do_dn()
         back_city()
         return
     end
-    cntout = 200
+    cntout = 300
     while cntout > 0 do
         if multiColor({{578, 126, 0xfbfbfc}, {618, 136, 0xffffff}, {670, 146, 0xffffff}, {483, 466, 0x607175}}) then
             tapxy(578, 126)
             break
         end
         cntout = cntout - 1
-        mSleep(10000)
+        mSleep(1000)
     end
+    if cntout <= 0 then
+        tapxy(578, 126)
+    end
+
     back_city()
 end
 function do_gbl()
@@ -1206,14 +1210,17 @@ function do_gbl()
         back_city()
         return
     end
-    cntout = 200
+    cntout = 300
     while cntout > 0 do
         if multiColor({{578, 126, 0xfbfbfc}, {618, 136, 0xffffff}, {670, 146, 0xffffff}, {483, 466, 0x607175}}) then
             tapxy(578, 126)
             break
         end
         cntout = cntout - 1
-        mSleep(10000)
+        mSleep(1000)
+    end
+    if cntout <= 0 then
+        tapxy(578, 126)
     end
     back_city()
 end
