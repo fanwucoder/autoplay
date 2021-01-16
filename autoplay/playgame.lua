@@ -1186,8 +1186,8 @@ function do_dn()
         cntout = cntout - 1
         mSleep(1000)
     end
-    if cntout <= 0 then
-        tapxy(578, 126)
+    for i = 1, 3 do
+        tapArray({{793, 644, 0x0f1a28}})
     end
 
     back_city()
@@ -1238,9 +1238,10 @@ function do_gbl()
         cntout = cntout - 1
         mSleep(1000)
     end
-    if cntout <= 0 then
-        tapxy(578, 126)
+    for i = 1, 3 do
+        tapArray({{793, 644, 0x0f1a28}})
     end
+
     back_city()
 end
 H["工会购买"] = {
@@ -1528,7 +1529,7 @@ function goGroup(area, subarea, name, level, times)
                 showMessage("副本刷完了")
                 break
             end
-            waitColor({"组队色点","组队刷完"},true,4,0.1) 
+            waitColor({"组队色点", "组队刷完"}, true, 4, 0.1)
         end
 
         showMessage("刷副本" .. cnt)
@@ -1556,8 +1557,8 @@ H["组队色点"] = {
         {{1145, 90, 0xbe9c6a}, {1119, 609, 0x15428d}, {947, 603, 0x1851a7}, {299, 166, 0x2d3e71}, {274, 124, 0x101a28}},
         {1122, 608, 0x14428f}
     },
-    {"组队刷完", {{1242, 96, 0x1555b8}, {1243, 168, 0x1558be}, {1225, 265, 0x182670}}, {1107,275}}
+    {"组队刷完", {{1242, 96, 0x1555b8}, {1243, 168, 0x1558be}, {1225, 265, 0x182670}}, {1107, 275}}
 }
-
+-- do_dn()
 -- goGroup("赫顿城", "诺曼达", "瘟疫", "王者", 999)
 -- tapArray({{191, 172, 0xdfe4ec}, {1064, 608, 0x2b7ac6}})
