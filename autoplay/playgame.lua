@@ -2,7 +2,7 @@ require("common")
 -- 卡分解页面
 MAP = {["格鲁"] = {321, 164}}
 SUB_MAP = {
-    -- ["诺曼达"] = {762, 167},
+    ["诺曼达"] = {762, 167},
     ["悬空"] = {963, 292},
     ["暮光"] = {308, 610}
 }
@@ -200,7 +200,7 @@ function goMap(area, subarea, name, level)
     -- level 等级
 
     randomTap(1190, 100)
-    for i = 0, 2, 1 do
+    for i = 1, 2, 1 do
         moveTo(734, 210, 711, 673)
         -- showMessage("滑动地图")
         rndSleep(100)
@@ -209,7 +209,7 @@ function goMap(area, subarea, name, level)
     SetTableID("进副本")
     local xy = SUB_MAP[subarea]
     mSleep(1000)
-    for i = 1, 3 do
+    for i = 1, 2 do
         -- showMessage("x:" .. xy[1] .. ",y:" .. xy[2])
         randomTap(xy[1], xy[2])
     end
@@ -303,26 +303,7 @@ function doPalyOne(area, subarea, name, level, times)
                 showMessage("继续副本")
             end
         end
-        -- 月卡
-        if multiColor({{918, 177, 0xddbb88}, {926, 187, 0xb79663}, {913, 195, 0xb18a54}, {932, 178, 0xc9aa7b}}) then
-            randomsTap(918, 177)
-        end
-        if find(5, {"上士登录页", "拜师"}, true) then
-            showMessage("关闭拜师")
-        end
-        if find(5, "拜师", true) then
-            showMessage("关闭拜师")
-        end
-
-        if find({"进副本", "变强卡屏"}, 5, true) then
-            showMessage("变强卡屏")
-            return false
-        end
-        -- 商人页面，没有检测到翻牌
-        if closeSR(1) then
-            doRePalyOne(false)
-        end
-
+        close_bad()
         if find(5, {"登录广告", "精力"}, false) then
             showMessage("已经超时回城了")
             if beginPlayOne(area, subarea, name, level) ~= true then
@@ -332,6 +313,27 @@ function doPalyOne(area, subarea, name, level, times)
         showMessage("刷副本" .. cnt)
         write_status("刷副本" .. cnt .. "\n")
         mSleep(200)
+    end
+end
+function close_bad()
+    -- 月卡
+    if multiColor({{918, 177, 0xddbb88}, {926, 187, 0xb79663}, {913, 195, 0xb18a54}, {932, 178, 0xc9aa7b}}) then
+        randomsTap(918, 177)
+    end
+    if find(5, {"上士登录页", "拜师"}, true) then
+        showMessage("关闭拜师")
+    end
+    if find(5, {"进副本", "拜师"}, true) then
+        showMessage("关闭拜师")
+    end
+
+    if find({"进副本", "变强卡屏"}, 5, true) then
+        showMessage("变强卡屏")
+        return false
+    end
+    -- 商人页面，没有检测到翻牌
+    if closeSR(1) then
+        doRePalyOne(false)
     end
 end
 function wait_bak(max_cnt)
@@ -388,11 +390,15 @@ function checkautoplay()
 
     return false
 end
-function waitPlayBegin()
+function waitPlayBegin(outcnt)
     showMessage("等待副本开始")
     SetTableID("进副本")
+    if outcnt == nil then
+        outcnt = 30
+    end
+
     cnt = 0
-    while cnt < 30 do
+    while cnt < outcnt do
         if find("副本血条", false) then
             showMessage("副本开始了")
             return true
@@ -442,7 +448,7 @@ function closeSR(wait)
     end
 
     local has_sr = false
-    showMessage("关闭神秘商人")
+    -- showMessage("关闭神秘商人")
     keepScreen(false)
     keepScreen(true)
     local x, y =
@@ -451,7 +457,7 @@ function closeSR(wait)
         has_sr = true
         randomsTap(x, y)
     else
-        showMessage("没有商人1")
+        -- showMessage("没有商人1")
     end
     keepScreen(false)
     mSleep(1000)
@@ -461,7 +467,7 @@ function closeSR(wait)
         has_sr = true
         randomsTap(1127, 126)
     else
-        showMessage("没有商人2")
+        -- showMessage("没有商人2")
     end
     keepScreen(false)
     mSleep(1000)
@@ -475,7 +481,7 @@ function closeSR(wait)
         showMessage("点击商人3")
         randomsTap(898, 85)
     else
-        showMessage("没有商人3")
+        -- showMessage("没有商人3")
     end
     keepScreen(false)
     mSleep(wait)
@@ -1417,32 +1423,141 @@ function lqgkjl()
     tapArray({{1135, 104, 0xbb9764}})
     back_city()
 end
-if find({"进副本", "变强卡屏"}, 5, true) then
-    showMessage("变强卡屏")
-    return false
+function xzfb(area, subarea, name, level)
+    if goMap(area, subarea, name, level) ~= true then
+        back_city()
+        return false
+    end
+    tapArray({{774, 642, 0x69a3c6}, {1140, 92, 0xbd9c6b}})
+    back_city()
+    return true
 end
--- qhzb()
---lqcj()
--- get_rc()
--- qhzb()
--- do_buygh(2)
--- make_xhp(6)
--- clear_xhp()
--- clear_xhp(y)
--- x, y = 797+95*2, 135
--- local x1, y1 = findImage("xhp_衣服.png",987,135,1037,185,10000)
--- if x1~=nil then
--- nLog("oo")
--- end
 
--- if x1 ~= nil then
---     showMessage("找到衣服")
---     -- tapxy(x1 + 50, y1 + 50)
---     -- tapxy(1109, 84)
---     -- cnt = cnt + 1
---     -- break
--- end
+function goGroup(area, subarea, name, level, times)
+    times = tonumber(times)
+    showMessage("开始组队:" .. times .. "次")
+    cnt = 0
+    local time_cost = 0
+    local begin_time = os.time()
+    has_check = false
+    if find(5, {"登录广告", "精力"}, false) then
+        showMessage("在城中了")
+        if xzfb(area, subarea, name, level) ~= true then
+            return
+        else
+            tapArray({{191, 172, 0xdfe4ec}})
+        end
+    end
 
--- use_zb_all(false)
---
---   moveTo(746, 513,757, 306,10,800)
+    while true do
+        local role = 1
+        local kszd = true
+        close_bad()
+        SetTableID("组队色点")
+        if find(5, {"登录广告", "精力"}, false) then
+            showMessage("在城中了")
+            goGroup(area, subarea, name, level, times)
+            return
+        end
+        if find("建队", true) then
+        end
+        if find("队长", false) then
+        -- showMessage("成为队长")
+        end
+
+        if find("队员", false) then
+            -- showMessage("队员")
+            role = 2
+        end
+        local dzsl = 1
+        if find("队友1", false) then
+            dzsl = 1
+        -- showMessage("队友数量1")
+        end
+        if find("队友2", false) then
+            dzsl = 2
+        -- showMessage("队友数量2")
+        end
+        if find("队友3", false) then
+            dzsl = 3
+            showMessage("队友数量3")
+        end
+        if kszd and dzsl ~= 3 and role == 1 then
+            tapArray({{895, 616, 0x2973bf}})
+        end
+        local has_begin = false
+        if find("开始", true) then
+            showMessage("副本开始")
+            has_begin = true
+        end
+        if waitPlayBegin(1) then
+            showMessage("副本开始")
+            has_begin = true
+        end
+
+        if (dzsl == 3 and role == 1) or has_begin then
+            if find({"组队色点", "开始"}, true) then
+                showMessage("准备好了")
+            end
+            tapArray({{1059, 610, 0x2e85d2}})
+        end
+        -- if has_check == false and waitPlayBegin() then
+        --     showMessage("副本开始了")
+        -- end
+        if has_check == false and has_begin then
+            if checkautoplay() == false then
+                --完善一场状态
+            else
+                has_check = true
+                showMessage("已经开始自动挂机")
+            end
+        end
+        time_cost = os.time() - begin_time
+
+        local is_end = false
+        if waitPlayEnd() then
+            showMessage("副本已经结束")
+            is_end = true
+        end
+
+        if is_end then
+            doOpenCard(true, true)
+            cnt = cnt + 1
+            showMessage("已经刷了" .. cnt .. "次")
+            if cnt > times then
+                showMessage("副本刷完了")
+                break
+            end
+            waitColor({"组队色点","组队刷完"},true,4,0.1) 
+        end
+
+        showMessage("刷副本" .. cnt)
+        write_status("刷副本" .. cnt .. "\n")
+        -- mSleep(100)
+    end
+end
+H["组队色点"] = {
+    {
+        "队长",
+        {{275, 602, 0x195bbd}, {418, 602, 0x1557bb}, {956, 596, 0x195fc3}, {1120, 600, 0x1a5fbe}, {1091, 104, 0x1356bd}},
+        {0, 0}
+    },
+    {"开始", {{824, 570, 0xd68813}, {628, 565, 0x144ea9}, {784, 130, 0x151d2d}}, {818, 572}},
+    {
+        "队员",
+        {{1091, 105, 0x1553b8}, {1071, 618, 0x101a28}, {1141, 86, 0xc6a677}, {285, 608, 0x1556b9}, {365, 617, 0x101a28}},
+        {0, 0}
+    },
+    {"队友1", 0.9, 397, 260, 421, 279, "0x54d22e", ""},
+    {"队友2", 0.90, 721, 259, 732, 278, "0x54d22d", ""},
+    {"队友3", 0.90, 1049, 266, 1060, 277, "0x54d22d", ""},
+    {
+        "建队",
+        {{1145, 90, 0xbe9c6a}, {1119, 609, 0x15428d}, {947, 603, 0x1851a7}, {299, 166, 0x2d3e71}, {274, 124, 0x101a28}},
+        {1122, 608, 0x14428f}
+    },
+    {"组队刷完", {{1242, 96, 0x1555b8}, {1243, 168, 0x1558be}, {1225, 265, 0x182670}}, {1107,275}}
+}
+
+-- goGroup("赫顿城", "诺曼达", "瘟疫", "王者", 999)
+-- tapArray({{191, 172, 0xdfe4ec}, {1064, 608, 0x2b7ac6}})
