@@ -348,10 +348,84 @@ function init_config()
     writeFileString("/sdcard/zlaccount.txt ", "", "w")
     initLog("runinfo", 1)
     nLogTab(PLAY_TASK_INFO)
+    get_num=get_num_ts
     --读取文件内容，返回全部内容的 string
 end
+local token_info = {
+    ["access_token"] = "",
+    ["expires_in"] = 0,
+    ["last_time"] = 0
+}
+function get_num_ts(x1, y1, x2, y2, tab)
+    ts = require("ts")
+    json = ts.json
+    local API = "LIDqc8lxXgbDa8dtXHVm7FTX"
+    local Secret = "uFod2vGXK3HhWw3MYFkeXaNF82akB2TH"
+    local token = ""
+    if os.time() - token_info["last_time"] < token_info["expires_in"] - 3600 then
+        token = token_info["access_token"]
+    else
+        code, access_token = getAccessToken(API, Secret)
+        if code == true then
+            token_info["access_token"] = access_token
+            token_info["expires_in"] = os.time() + 3500
+            token_info["last_time"] = os.time()
+            token = access_token
+        end
+    end
+    if token == "" then
+        return nil
+    end
+
+    local ret = mybinaryzation(x1, y1, x2, y2, tab)
+    if ret == nil then
+        return nil
+    end
+    local code2, body = baiduAI(token, ret)
+    if code2 == true then
+        local tmp = json.decode(body)
+        nLog(body)
+        if #tmp['words_result']>0 then
+           return tonumber( tmp['words_result'][1]['words'])
+        end
+        return nil
+    end
+end
+function mybinaryzation(x1, y1, x2, y2, tab)
+    local image = require("tsimg")
+    snapshot("/sdcard/a.png", x1, y1, x2, y2)
+    -- 将文件转换为图片对象
+    local newImage, msg = image.loadFile("/sdcard/a.png")
+    if image.is(newImage) then
+        --将图片对象进行二值化
+        --图片中 0xFF27FF - 0x012815 区间内颜色值二值化后变为白色，不在区间内的颜色值都转换为黑色，可以写入多个 table
+        -- 方式一
+        -- {0x757475,0x979697}
+        local binaMat, msg = image.binaryzation(newImage, tab)
+        -- 方式二
+        -- local binaMat,msg = image.binaryzation(newImage, "FF27FF-012815")
+        if image.is(binaMat) then
+            --将图片对象转换成图片保存在 res 文件夹下
+            local boo, msg = image.saveToPngFile(binaMat, "/sdcard/aa.png")
+            return "/sdcard/aa.png"
+        else
+            return nil
+        end
+    else
+        return nil
+    end
+end
+-- init(1)
+-- -- ctab = {{0xfefefe, 0x111111}, {0xbab9ba, 0x222222}, {0x757575, 0x222222}, {0xe3e3e3, 0x111111}}
+-- ctab = "fefefe-111111|bab9ba-222222|757575-222222|e3e3e3-111111"
+-- -- mybinaryzation(949, 187, 989, 221, ctab)
+-- nLog(get_num_ts(949, 187, 989, 221, ctab))
+-- 0x868586
+
+-- get_num_ts()
 init_config()
 -- mSleep(2000)
 -- x={1,2,3}
 -- table.remove(x,1)
 -- nLogTab(x)
+

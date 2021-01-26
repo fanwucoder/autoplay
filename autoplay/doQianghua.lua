@@ -196,8 +196,19 @@ function qhz_level_one(px, py, begin_level, level)
     end
     return ret
 end
+
+function get_item_level(x1,y1,x2,y2)
+    local qhdj = get_num(x1,y1,x2,y2, "fefefe-111111|bab9ba-222222")
+    return qhdj
+end
 mSleep(1000)
-qhz_level(-1, 8, 5, 999)
+-- 
+-- ctab = 
+-- -- mybinaryzation(949, 187, 989, 221, ctab)
+-- nLog(get_num_ts(, ctab))
+local item_level=get_item_level(932,299,989,346)
+nLog(item_level)
+-- qhz_level(-1, 8, 5, 999)
 
 -- tapArray({{1088, 228, 0x22293b}})
 
