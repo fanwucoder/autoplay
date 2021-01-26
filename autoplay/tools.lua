@@ -22,6 +22,21 @@ function waitFound(to, step, func)
     end
     return false
 end
+function waitFound2(to, step, ...)
+    local cnt = 0
+    while cnt < to do
+        for k, func in pairs({...}) do
+            local ret1,ret2 = func()
+            if ret1 then
+                -- nLog("找到图色")
+                return true, k, ret2
+            end
+        end
+        mSleep(step * 1000)
+        cnt = cnt + step
+    end
+    return false
+end
 function processState(stateTable, stateName, stateParam)
     if stateTable[stateName] ~= nil then
         return stateTable[stateName](stateParam)
@@ -422,12 +437,12 @@ function read_table(name, value)
     end
     return ret
 end
-function write_status(status,mode)
-    if mode==nil then
-        mode="a"
+function write_status(status, mode)
+    if mode == nil then
+        mode = "a"
     end
-    
-    writeFileString("/sdcard/touch_status.txt", status,mode)
+
+    writeFileString("/sdcard/touch_status.txt", status, mode)
 end
 function make_xhp(idx)
     -- 生成背包中所有消耗品的图片
