@@ -26,7 +26,7 @@ function waitFound2(to, step, ...)
     local cnt = 0
     while cnt < to do
         for k, func in pairs({...}) do
-            local ret1,ret2 = func()
+            local ret1, ret2 = func()
             if ret1 then
                 -- nLog("找到图色")
                 return true, k, ret2
@@ -467,6 +467,16 @@ function make_xhp(idx)
     end
 end
 
+function get_bgp(x, y, xstep, ystep, n, row_count)
+    -- 计算表格坐标
+    -- x,y 表格顶点坐标
+    -- xstep, ystep 表格宽高
+    -- n:第几个表格
+    -- row_count：表格行数
+    local row, other = math.modf(n / row_count)
+    local col = n % 5
+    return x + col * xstep, y + row * ystep
+end
 -- write_table("test_tab",{1,2,aa={3,4}})
 -- ret=read_table("test_tab")
 -- nLog(ret.aa)

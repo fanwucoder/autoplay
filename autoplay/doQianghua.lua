@@ -24,13 +24,16 @@ function moveItem(direct)
     local sx = 1073 + getRnd(0, 5)
     local sy = 229 + getRnd(0, 5)
     touchDown(sx, sy)
-    for i = 1, 3 do
+    mSleep(300)
+    touchDown(sx, sy)
+    for i = 1, 40 do
         sy = sy + getRnd(8, 12) * direct
         touchMove(sx, sy)
 
         mSleep(10)
     end
     touchUp(sx + 1, sy)
+    mSleep(2000)
 end
 
 function match_type()
@@ -103,9 +106,6 @@ function qhret()
         return true, 1
     end
 
-    if x ~= -1 then
-        return true, 1
-    end
     keepScreen(true)
     x, y = findImageInRegionFuzzy("qhcg.png", 90, 628, 94, 752, 130, 0, 1)
     keepScreen(false)
@@ -129,55 +129,86 @@ function qhz_level(begin_level, level, num, times)
     direct = -1
     try_times = 0
     success = 0
-    while (true) do
+    d_count = 0
+    last_d = direct
+    move_count = 50
+    while move_count > 0 do
         local a, b = match_type()
         if a ~= -1 then
-            if isColor(938, b + 7, 0x00ce08) then
-                showMessage("跳过穿戴装备")
-                direct = -1
-            else
+            local find_1 = false
+            for i = b, 720, 124 do
+                if isColor(938, b + 7, 0x00ce08) then
+                    showMessage("跳过穿戴装备")
+                else
+                    b = i
+                    find_1 = true
+                    break
+                end
+            end
+
+            if find_1 then
                 showMessage("找到可强化的装备")
                 local px, py = a, b + 50
+                nLog(px)
+                nLog(py)
+                -- lua_exit()
                 local px1, py1 = get_from_page(px, py, begin_level, level)
                 if px1 ~= -1 then
                     -- 根据当前的强化等级滑动
-                    local ret = qhz_level_one(px, py, begin_level, level)
+                    local ret = qhz_level_one(px1, py1, level)
                     if ret ~= -1 then
                         try_times = try_times + 1
                     end
-                    if ret == 0 or ret == 1 then
+                    nLog(ret)
+                    if ret == 0 or ret == 2 then
                         success = success + 1
                     end
+                else
+                    tapArray({{px, py, 0x22293b}, {px, py, 0x22293b}})
+                    local start_dj = getzb_dj()
+                    if start_dj >= begin_level then
+                        direct = -1
+                    else
+                        direct = 1
+                    end
                 end
-                local start_dj = getzb_dj()
-                if start_dj <= level then
-                    direct = -1
-                end
-                if level > begin_level then
-                    direct = 1
-                end
+            else
+                direct = -1
             end
         end
         if try_times >= times or success >= num then
-            return
+            nLog("times" .. try_times)
+            nLog("success" .. success)
+            return try_times, success
         end
-
+        if direct == last_d then
+            d_count = d_count + 1
+        else
+            d_count = 0
+        end
+        if d_count > 5 then
+            nLog("change direct" .. d_count)
+            direct = -direct
+            d_count = 0
+        end
         moveItem(direct)
-        move_times = move_times + 1
+        move_count = move_count - 1
     end
+    return try_times, success
 end
 function get_from_page(px, py, begin_level, level)
     for i = py, 720, 124 do
-        start_dj = getzb_dj()
         tapArray({{px, i, 0x22293b}})
-        if start_dj < level and (start_dj == begin_level or begin_level == -1) then
+        start_dj = getzb_dj()
+        nLog("start_dj" .. start_dj)
+        if (start_dj < level and begin_level == -1) or (start_dj == begin_level) then
             return px, i
         end
     end
     return -1, -1
 end
 
-function qhz_level_one(px, py, begin_level, level)
+function qhz_level_one(px, py, level)
     tapArray({{px, py, 0x22293b}})
     start_dj = getzb_dj()
     local find, pos, ret = false, 0, -1
@@ -187,6 +218,7 @@ function qhz_level_one(px, py, begin_level, level)
     else
         find, pos, ret = waitFound2(60, 0.3, qhret)
     end
+    nLog("ret" .. ret)
     if ret == 0 then
         tapArray({{638, 610, 0x5275b0}})
     elseif ret == 1 then
@@ -197,17 +229,47 @@ function qhz_level_one(px, py, begin_level, level)
     return ret
 end
 
-function get_item_level(x1,y1,x2,y2)
-    local qhdj = get_num(x1,y1,x2,y2, "fefefe-111111|bab9ba-222222")
+function get_item_level(x1, y1, x2, y2)
+    local qhdj = get_num(x1, y1, x2, y2, "fefefe-111111|bab9ba-222222")
     return qhdj
 end
 mSleep(1000)
--- 
--- ctab = 
+-- qhz_level(8, 9, 1, 999)
+function getzb_id(x, y)
+    tapArray({{x, y, 0}})
+    color = {
+        {911, 86, 0xb069fb},
+        {911, 56, 0x21113c},
+        {899, 71, 0xa561ec},
+        {923, 71, 0xb36bff},
+        {963, 120, 0x402941},
+        {992, 139, 0xf15b6e},
+        {981, 145, 0xf6677c}
+    }
+    local ret = -1
+    local level=get_item_level(974,96,1038,142)
+    if multiColor(color) then
+        tapArray({{36, 424, 0x030508}})
+        return 0,level
+    end
+    tapArray({{36, 424, 0x030508}})
+    return ret,level
+end
+startx, starty = 797, 135
+for i = 1, 25 do
+    zx, zy = get_bgp(startx, starty, 95, 95, i - 1, 5)
+    a,b=getzb_id(zx + 30, zy + 30)
+    nLog(a)
+    nLog(b)
+end
+
+-- moveItem(1)
+
+-- ctab =
 -- -- mybinaryzation(949, 187, 989, 221, ctab)
 -- nLog(get_num_ts(, ctab))
-local item_level=get_item_level(932,299,989,346)
-nLog(item_level)
+-- local item_level=get_item_level(941,276,994,315)
+-- nLog(item_level)
 -- qhz_level(-1, 8, 5, 999)
 
 -- tapArray({{1088, 228, 0x22293b}})

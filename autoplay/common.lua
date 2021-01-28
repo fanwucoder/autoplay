@@ -257,6 +257,7 @@ function init_config()
     local lines = strSplit(config_data, "\n")
     for i = 1, #lines do
         line = lines[i]
+        line=string.gsub(line,"\r","")
         showMessage("读取配置:" .. line)
         local kv = strSplit(line, "::")
         k = kv[1]
@@ -348,7 +349,7 @@ function init_config()
     writeFileString("/sdcard/zlaccount.txt ", "", "w")
     initLog("runinfo", 1)
     nLogTab(PLAY_TASK_INFO)
-    get_num=get_num_ts
+    -- get_num=get_num_ts
     --读取文件内容，返回全部内容的 string
 end
 local token_info = {
