@@ -394,6 +394,9 @@ function convert_tab(tab)
 end
 function showMessage(msg)
     if message_log then
+        if msg == nil then
+            msg = "nil"
+        end
         nLog(msg)
         wLog("runinfo", "[DATE] " .. msg)
     end

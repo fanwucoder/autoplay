@@ -1,32 +1,21 @@
 -- 自动强化装备
 require("playgame")
 require("tools")
--- tapArray({{955, 37, 0x4f270f},{108, 524, 0x0e1117},{728, 288, 0x0c2449},
---     {1197, 102, 0x14418d},{1199, 384, 0x101721},{993, 102, 0xbecbe0},{992, 212, 0x111822},{993, 102, 0xbecbe0},{992, 212, 0x111822}})
--- local num = get_num(942,13,1052,50, "DBDEE0-111111|BFC5CB-111111") or 0
--- showMessage("绿石数量:"..num)
--- mSleep(2000)
---  num = get_num(1135,15,1239,51, "DBDEE0-111111|BFC5CB-111111") or 0
--- nLog("绿石数量:"..num)
+
 function buy_zb(num)
     -- 购买装备
     for i = 1, num do
         tapArray({{1204, 547, 0x422909}, {642, 650, 0xc1c2c4}, {803, 18, 0x0f1420}})
     end
 end
--- back_city()
--- 打开背包，消除新字
--- tapArray({{1230, 672, 0x663b23}})
--- back_city()
--- 打开强化界面
--- tapArray({{1232, 543, 0xb79969},{1063, 584, 0x654020}})
+
 function moveItem(direct)
     local sx = 1073 + getRnd(0, 5)
     local sy = 229 + getRnd(0, 5)
     touchDown(sx, sy)
     mSleep(300)
     touchDown(sx, sy)
-    for i = 1, 40 do
+    for i = 1, 10 do
         sy = sy + getRnd(8, 12) * direct
         touchMove(sx, sy)
 
@@ -163,14 +152,13 @@ function qhz_level(begin_level, level, num, times)
                     if ret == 0 or ret == 2 then
                         success = success + 1
                     end
+                end
+                tapArray({{px, py, 0x22293b}, {px, py, 0x22293b}})
+                local start_dj = getzb_dj()
+                if start_dj >= begin_level then
+                    direct = -1
                 else
-                    tapArray({{px, py, 0x22293b}, {px, py, 0x22293b}})
-                    local start_dj = getzb_dj()
-                    if start_dj >= begin_level then
-                        direct = -1
-                    else
-                        direct = 1
-                    end
+                    direct = 1
                 end
             else
                 direct = -1
@@ -213,10 +201,22 @@ function qhz_level_one(px, py, level)
     start_dj = getzb_dj()
     local find, pos, ret = false, 0, -1
     qh_level(level)
-    if level - start_dj > 1 then
-        find, pos, ret = waitFound2(60, 0.3, qhwc)
-    else
-        find, pos, ret = waitFound2(60, 0.3, qhret)
+    for i = 1, 100 do
+        if level - start_dj > 1 then
+            find, pos, ret = waitFound2(3, 0.3, qhwc)
+        else
+            find, pos, ret = waitFound2(3, 0.3, qhret)
+        end
+
+        if multiColor({{171, 108, 0x006300}, {177, 93, 0x3b3f3b}, {179, 93, 0xfefefe}}) then
+            tapArray({{560, 82, 0x101d30}, {560, 82, 0x101d30}})
+            return -1
+        end
+
+        if multiColor({{411, 103, 0x006300}, {415, 96, 0xc9c9c9}, {418, 91, 0x626362}}) then
+            tapArray({{560, 82, 0x101d30}, {560, 82, 0x101d30}})
+            return -1
+        end
     end
     nLog("ret" .. ret)
     if ret == 0 then
@@ -237,6 +237,9 @@ mSleep(1000)
 -- qhz_level(8, 9, 1, 999)
 function getzb_id(x, y)
     tapArray({{x, y, 0}})
+    if multiColor({{1228, 671, 0x144493}, {977, 656, 0x124eb3}, {890, 11, 0x2b3a5a}}) then
+        return -2
+    end
     color = {
         {911, 86, 0xb069fb},
         {911, 56, 0x21113c},
@@ -247,21 +250,130 @@ function getzb_id(x, y)
         {981, 145, 0xf6677c}
     }
     local ret = -1
-    local level=get_item_level(974,96,1038,142)
+    local level = get_item_level(974, 96, 1038, 142)
     if multiColor(color) then
         tapArray({{36, 424, 0x030508}})
-        return 0,level
+
+        return 0, level
     end
     tapArray({{36, 424, 0x030508}})
-    return ret,level
+    return ret, level
 end
-startx, starty = 797, 135
-for i = 1, 25 do
-    zx, zy = get_bgp(startx, starty, 95, 95, i - 1, 5)
-    a,b=getzb_id(zx + 30, zy + 30)
-    nLog(a)
-    nLog(b)
+
+function count_dz()
+    tapArray({{1232, 670, 0x764620}})
+    local startx, starty = 797, 135
+    local tab = {}
+    tab[0] = {[0] = 0, [8] = 0, [9] = 0, [10] = 0}
+    local total_cnt = 0
+    for i = 1, 25 do
+        zx, zy = get_bgp(startx, starty, 95, 95, i - 1, 5)
+        a, b = getzb_id(zx + 30, zy + 30)
+
+        if a == -2 then
+            break
+        end
+        showMessage(a)
+        showMessage(b)
+        if a == 0 then
+            if b == nil or b < 8 then
+                b = 0
+            end
+            if tab[a] == nil then
+                tab[a] = {}
+            end
+            tab[a][b] = tab[a][b] + 1
+            dz_cnt = dz_cnt + 1
+        end
+    end
+    return total_cnt, tab[0]
 end
+function begin_dz()
+    -- -1 绿石不够
+    local dz_cnt, dz_dt = count_dz()
+    local need_dz = 10 - dz_cnt
+    if need_dz > 0 then
+        tapArray(
+            {
+                {955, 37, 0x4f270f},
+                {108, 524, 0x0e1117},
+                {728, 288, 0x0c2449},
+                {1197, 102, 0x14418d},
+                {1199, 384, 0x101721},
+                {993, 102, 0xbecbe0},
+                {992, 212, 0x111822},
+                {993, 102, 0xbecbe0},
+                {992, 212, 0x111822}
+            }
+        )
+        local num = get_num(942, 13, 1052, 50, "f3f4f5-111111|858e96-111111")
+        if num == nil then
+            num = 0
+        end
+        local num1 = get_num(1135, 15, 1239, 51, "f3f4f5-111111|858e96-111111")
+        if num1 == nil then
+            num1 = 0
+        end
+        if num + num1 < need_dz * 50 then
+            nLog("绿石不够")
+            return -1
+        end
+        buy_zb(need_dz)
+        back_city()
+    end
+    tapArray({{1230, 672, 0x663b23}})
+    back_city()
+end
+-- begin_dz()
+function qhdz(level, count)
+    tapArray({{1232, 543, 0xb79969}, {1063, 584, 0x654020}})
+    total_cnt = 18
+    local times = 0
+    local cnt = 0
+    tab = {[0] = 11, [9] = 2, [8] = 2, [10] = 0}
+    while tab[level] < count do
+        if tab[9] >= 3 then
+            times, cnt = qhz_level(9, 10, 1, 3)
+            tab[10] = tab[10] + cnt
+            tab[9] = tab[9] - times
+        elseif tab[8] >= 3 then
+            times, cnt = qhz_level(8, 9, 1, 3)
+            tab[9] = tab[9] + cnt
+            tab[8] = tab[8] - times
+        else
+            times, cnt = qhz_level(-1, 8, 1, 999)
+            tab[8] = tab[8] + cnt
+            tab[0] = tab[0] - times
+        end
+        nLog("8:" .. tab[8] .. ",9:" .. tab[9] .. ",10:" .. tab[10])
+    end
+end
+--   find, pos, ret = waitFound2(300, 0.3, qhwc)
+--   nLog("wl")
+-- mSleep(2000)
+-- snapshot("/sdcard/qhwc.png", 604, 591, 667, 628)
+-- qhz_level(1, 3, 1, 3)
+
+qhdz(10, 5)
+-- local num = get_num(942, 13, 1052, 50, "f3f4f5-111111|858e96-111111")
+-- if num == nil then
+--     num = 0
+-- end
+-- local num1 = get_num(1135, 15, 1239, 51, "f3f4f5-111111|858e96-111111")
+-- if num1 == nil then
+--     num1 = 0
+-- end
+-- nLog(num )
+--
+-- showMessage("绿石数量:"..num)
+-- mSleep(2000)
+--   or 0
+-- nLog("绿石数量:"..num)
+-- back_city()
+-- 打开背包，消除新字
+
+-- 打开强化界面
+--
 
 -- moveItem(1)
 

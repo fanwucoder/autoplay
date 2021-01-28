@@ -349,7 +349,7 @@ function init_config()
     writeFileString("/sdcard/zlaccount.txt ", "", "w")
     initLog("runinfo", 1)
     nLogTab(PLAY_TASK_INFO)
-    -- get_num=get_num_ts
+    get_num=get_num_ts
     --读取文件内容，返回全部内容的 string
 end
 local token_info = {
